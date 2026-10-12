@@ -1,0 +1,2624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ResumeCraft — Build a Resume That Gets You Noticed</title>
+<meta name="description" content="ResumeCraft is a free online resume and cover letter builder. Create a professional resume in minutes with live preview, four templates, PDF export and local autosave.">
+<style>
+/* ============================================================
+   ResumeCraft — single-file stylesheet
+   ============================================================ */
+:root{
+  --navy:#0f172a; --slate:#475569; --muted:#64748b;
+  --line:#e2e8f0; --line2:#cbd5e1;
+  --bg:#f7f9fc; --bg2:#f1f5f9; --card:#fff;
+  --accent:#2563eb; --accent-d:#1d4ed8; --accent-s:#eff6ff; --accent-l:#bfdbfe;
+  --danger:#b91c1c; --ok:#15803d;
+  --r:14px; --rs:10px; --rl:20px;
+  --sh:0 1px 2px rgba(15,23,42,.06),0 1px 3px rgba(15,23,42,.05);
+  --sh2:0 10px 30px rgba(15,23,42,.08);
+  --sh3:0 24px 60px rgba(15,23,42,.12);
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --serif:Georgia,"Times New Roman",Times,serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--font);font-size:16px;line-height:1.6;color:var(--navy);background:var(--bg);-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0 0 .5em;line-height:1.22;letter-spacing:-.015em}
+p{margin:0 0 1em}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+button{font:inherit;cursor:pointer}
+input,textarea,select{font:inherit;color:inherit}
+ul{margin:0;padding:0;list-style:none}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid rgba(37,99,235,.5);outline-offset:2px;border-radius:8px}
+.container{width:min(1160px,92vw);margin:0 auto}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1px solid transparent;border-radius:11px;padding:11px 18px;font-weight:600;font-size:.94rem;background:#fff;color:var(--navy);text-decoration:none;transition:background .18s,color .18s,border-color .18s,transform .18s,box-shadow .18s;white-space:nowrap}
+.btn:hover{text-decoration:none;transform:translateY(-1px)}
+.btn:active{transform:translateY(0)}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 6px 16px rgba(37,99,235,.24)}
+.btn-primary:hover{background:var(--accent-d)}
+.btn-outline{border-color:var(--line2);background:#fff;color:var(--navy)}
+.btn-outline:hover{border-color:var(--accent-l);background:var(--accent-s);color:var(--accent-d)}
+.btn-ghost{background:transparent;border-color:transparent;color:var(--slate)}
+.btn-ghost:hover{background:#eef2f7;color:var(--navy)}
+.btn-danger{background:transparent;border-color:transparent;color:var(--danger)}
+.btn-danger:hover{background:#fef2f2;color:#991b1b}
+.btn-sm{padding:8px 14px;font-size:.85rem;border-radius:9px}
+.btn-lg{padding:14px 26px;font-size:1.02rem;border-radius:12px}
+.btn-block{width:100%}
+.btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh)}
+.hint{font-size:.82rem;color:var(--muted);margin:6px 0 0}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.field label{font-size:.82rem;font-weight:600;color:var(--slate)}
+.field input[type=text],.field input[type=email],.field input[type=url],.field input[type=date],.field textarea,.field select{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:.93rem;transition:border-color .15s,box-shadow .15s}
+.field input:hover,.field textarea:hover,.field select:hover{border-color:var(--line2)}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.14)}
+.field textarea{min-height:96px;resize:vertical;line-height:1.55}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:0 16px}
+@media(max-width:620px){.grid-2{grid-template-columns:1fr}}
+.checkline{display:flex;align-items:center;gap:10px;margin:-4px 0 14px}
+.checkline input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
+.checkline label{font-size:.86rem;color:var(--slate);font-weight:500}
+.switch{display:inline-flex;align-items:center;gap:8px;cursor:pointer;font-size:.8rem;color:var(--muted);font-weight:600}
+.switch input{width:36px;height:20px;appearance:none;background:#cbd5e1;border-radius:999px;position:relative;transition:background .18s;cursor:pointer;flex:none;margin:0}
+.switch input::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .18s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.switch input:checked{background:var(--accent)}
+.switch input:checked::after{transform:translateX(16px)}
+.tag-input{display:flex;gap:8px}
+.tag-input input{flex:1;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:.93rem}
+.tag-input input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.14)}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.tag{display:inline-flex;align-items:center;gap:6px;background:var(--accent-s);color:var(--accent-d);border:1px solid var(--accent-l);border-radius:999px;padding:5px 6px 5px 12px;font-size:.82rem;font-weight:600}
+.tag button{border:none;background:transparent;color:inherit;font-size:1rem;line-height:1;padding:2px 6px;border-radius:999px;opacity:.75}
+.tag button:hover{opacity:1;background:rgba(37,99,235,.12)}
+.item-card{border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:14px;background:#fcfdff}
+.item-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.item-head strong{font-size:.76rem;text-transform:uppercase;letter-spacing:.09em;color:var(--navy)}
+.item-actions{display:flex;gap:6px}
+.icon-btn{border:1px solid var(--line);background:#fff;border-radius:8px;min-width:32px;height:32px;padding:0 9px;display:inline-grid;place-items:center;font-size:.8rem;color:var(--slate);font-weight:600;transition:background .15s,color .15s,border-color .15s}
+.icon-btn:hover{background:#f1f5f9;color:var(--navy)}
+.icon-btn.danger:hover{background:#fef2f2;color:var(--danger);border-color:#fecaca}
+#toast{position:fixed;left:50%;bottom:26px;z-index:400;transform:translate(-50%,20px);background:var(--navy);color:#fff;padding:13px 22px;border-radius:12px;font-size:.88rem;box-shadow:var(--sh3);opacity:0;pointer-events:none;max-width:min(560px,90vw);text-align:center;transition:opacity .25s,transform .25s}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+.modal-backdrop{position:fixed;inset:0;z-index:500;background:rgba(15,23,42,.55);display:grid;place-items:center;padding:20px}
+.modal{background:#fff;border-radius:18px;padding:28px;width:min(540px,100%);box-shadow:var(--sh3);max-height:88vh;overflow:auto}
+.modal h2{font-size:1.25rem;margin-bottom:10px}
+.modal p{color:var(--slate);font-size:.94rem}
+.modal-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;flex-wrap:wrap}
+.modal code{background:var(--bg2);padding:2px 6px;border-radius:6px;font-size:.85em;word-break:break-all}
+
+.site-nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;height:70px}
+.brand{display:inline-flex;align-items:center;gap:10px;font-weight:800;color:var(--navy);font-size:1.12rem;letter-spacing:-.02em;background:none;border:none;padding:0}
+.brand:hover{text-decoration:none}
+.brand-mark{display:grid;place-items:center;width:34px;height:34px;border-radius:10px;background:var(--accent);color:#fff;font-size:.78rem;font-weight:800;box-shadow:0 4px 12px rgba(37,99,235,.3)}
+.nav-links{display:flex;align-items:center;gap:6px}
+.nav-links a,.nav-link-btn{padding:9px 13px;border-radius:9px;color:var(--slate);font-weight:600;font-size:.92rem;background:none;border:none}
+.nav-links a:hover,.nav-link-btn:hover{background:var(--bg2);color:var(--navy);text-decoration:none}
+.nav-toggle{display:none;align-items:center;gap:8px;border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 14px;font-weight:600;font-size:.9rem;color:var(--navy)}
+@media(max-width:920px){
+  .nav-toggle{display:inline-flex}
+  .nav-links{display:none;position:absolute;top:70px;left:0;right:0;flex-direction:column;align-items:stretch;gap:4px;background:#fff;border-bottom:1px solid var(--line);padding:14px 5vw 20px;box-shadow:var(--sh2)}
+  .nav-links.open{display:flex}
+  .nav-links a,.nav-link-btn,.nav-links .btn{margin-left:0;width:100%;justify-content:flex-start;text-align:left;padding:12px 14px}
+}
+.hero{padding:70px 0 80px;background:linear-gradient(180deg,#fff 0%,var(--bg) 100%)}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+@media(max-width:960px){.hero-grid{grid-template-columns:1fr;gap:40px}}
+.eyebrow{display:inline-block;background:var(--accent-s);color:var(--accent-d);border:1px solid var(--accent-l);border-radius:999px;padding:6px 14px;font-size:.78rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;margin-bottom:18px}
+.hero h1{font-size:clamp(2.05rem,4.6vw,3.3rem);letter-spacing:-.03em;margin-bottom:16px}
+.lead{font-size:1.13rem;color:var(--slate);max-width:36em;margin-bottom:26px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:26px}
+.hero-points{display:flex;flex-wrap:wrap;gap:10px 22px;font-size:.9rem;color:var(--slate)}
+.hero-points li{display:flex;align-items:center;gap:8px}
+.hero-points li::before{content:"✓";display:grid;place-items:center;width:19px;height:19px;flex:none;border-radius:50%;background:#dcfce7;color:#15803d;font-size:.7rem;font-weight:800}
+.hero-visual{display:flex;justify-content:center}
+.mock-page{width:100%;max-width:430px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh3);padding:30px 30px 34px;position:relative;overflow:hidden}
+.mock-page::before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:var(--accent)}
+.mock-name{font-size:1.35rem;font-weight:800;letter-spacing:-.02em}
+.mock-role{font-size:.82rem;font-weight:700;color:var(--accent);margin-top:2px}
+.mock-contact{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.7rem;color:var(--muted);margin-top:8px}
+.mock-head{padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.mock-sec{margin-bottom:15px}
+.mock-h{height:6px;width:34%;background:var(--accent);border-radius:3px;margin-bottom:9px}
+.mock-line{height:6px;border-radius:3px;background:#e6ebf2;margin-bottom:6px}
+.w95{width:95%}.w85{width:85%}.w75{width:75%}.w60{width:60%}.w45{width:45%}
+.mock-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.mock-chip{height:16px;width:58px;border-radius:999px;background:var(--accent-s);border:1px solid var(--accent-l)}
+.section{padding:76px 0}
+.section.alt{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.section-head{max-width:660px;margin:0 auto 44px;text-align:center}
+.section-head h2{font-size:clamp(1.6rem,3vw,2.15rem)}
+.section-head p{color:var(--slate);font-size:1.03rem;margin:0}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+@media(max-width:820px){.steps{grid-template-columns:1fr}}
+.step{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:28px 24px;box-shadow:var(--sh)}
+.step-num{display:grid;place-items:center;width:38px;height:38px;border-radius:11px;background:var(--accent-s);color:var(--accent-d);font-weight:800;margin-bottom:16px}
+.step h3{font-size:1.06rem;margin-bottom:6px}
+.step p{color:var(--slate);font-size:.92rem;margin:0}
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:920px){.feature-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.feature-grid{grid-template-columns:1fr}}
+.feature{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:24px;box-shadow:var(--sh);transition:transform .18s,box-shadow .18s}
+.feature:hover{transform:translateY(-3px);box-shadow:var(--sh2)}
+.feature-icon{display:grid;place-items:center;width:40px;height:40px;border-radius:11px;background:var(--accent-s);color:var(--accent-d);font-size:1.1rem;margin-bottom:14px}
+.feature h3{font-size:1rem;margin-bottom:6px}
+.feature p{color:var(--slate);font-size:.9rem;margin:0}
+.template-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+@media(max-width:1000px){.template-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.template-grid{grid-template-columns:1fr}}
+.template-card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--sh);display:flex;flex-direction:column;transition:transform .18s,box-shadow .18s,border-color .18s}
+.template-card:hover{transform:translateY(-3px);box-shadow:var(--sh2)}
+.template-card.is-active{border-color:var(--accent);box-shadow:0 0 0 3px rgba(37,99,235,.14)}
+.template-card.is-locked .mini{opacity:.55}
+.template-body{padding:14px 4px 0;display:flex;flex-direction:column;flex:1}
+.template-body h3{font-size:.98rem;margin-bottom:6px}
+.template-body p{color:var(--slate);font-size:.84rem;flex:1}
+.template-body .btn{align-self:flex-start;margin-top:8px}
+.mini{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px;height:186px;overflow:hidden;display:flex;flex-direction:column;gap:9px}
+.mini-head{display:flex;flex-direction:column;gap:5px}
+.mini-bar{height:6px;border-radius:3px;background:#e6ebf2;width:100%}
+.mini-bar.name{height:10px;width:58%;background:var(--navy)}
+.mini-bar.role{width:40%;background:#93c5fd}
+.mini-bar.h{width:32%;background:var(--accent);height:5px;margin-bottom:6px}
+.mini-sec{display:flex;flex-direction:column;gap:5px}
+.mini.tpl-classic .mini-head{align-items:center;border-bottom:2px solid #111827;padding-bottom:8px}
+.mini.tpl-classic .mini-bar.name{background:#111827}
+.mini.tpl-classic .mini-bar.role{background:#9ca3af}
+.mini.tpl-classic .mini-bar.h{background:#111827;width:44%}
+.mini.tpl-minimal .mini-bar.name{background:#334155}
+.mini.tpl-minimal .mini-bar.h{background:#cbd5e1}
+.mini.tpl-minimal .mini-bar.role{background:#cbd5e1}
+.mini.tpl-creative .mini-head{background:var(--accent);margin:-14px -14px 0;padding:16px 14px 14px;border-radius:10px 10px 0 0}
+.mini.tpl-creative .mini-bar.name{background:#fff;width:62%}
+.mini.tpl-creative .mini-bar.role{background:rgba(255,255,255,.7)}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch}
+@media(max-width:900px){.pricing-grid{grid-template-columns:1fr}}
+.price-card{background:#fff;border:1px solid var(--line);border-radius:var(--rl);padding:30px 26px;display:flex;flex-direction:column;box-shadow:var(--sh);position:relative;transition:transform .18s,box-shadow .18s}
+.price-card:hover{transform:translateY(-3px);box-shadow:var(--sh2)}
+.price-card.featured{border-color:var(--accent);box-shadow:0 18px 44px rgba(37,99,235,.16)}
+.price-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:5px 14px;border-radius:999px}
+.price-card h3{font-size:1.1rem;margin-bottom:4px}
+.price-amount{font-size:2.1rem;font-weight:800;letter-spacing:-.03em;margin:8px 0 2px}
+.price-amount span{font-size:.9rem;font-weight:600;color:var(--muted);letter-spacing:0}
+.price-desc{color:var(--slate);font-size:.88rem;margin-bottom:18px}
+.price-list{flex:1;margin-bottom:22px}
+.price-list li{display:flex;gap:10px;align-items:flex-start;font-size:.89rem;color:var(--slate);padding:6px 0}
+.price-list li::before{content:"✓";color:var(--ok);font-weight:800;font-size:.8rem;flex:none;margin-top:2px}
+.faq-list{max-width:820px;margin:0 auto}
+.faq-item{background:#fff;border:1px solid var(--line);border-radius:var(--r);margin-bottom:12px;box-shadow:var(--sh);overflow:hidden}
+.faq-item summary{cursor:pointer;padding:18px 22px;font-weight:700;font-size:.98rem;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:14px}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary::after{content:"+";font-size:1.3rem;color:var(--accent);font-weight:600;flex:none}
+.faq-item[open] summary::after{content:"−"}
+.faq-body{padding:0 22px 20px;color:var(--slate);font-size:.93rem}
+.faq-body p:last-child{margin-bottom:0}
+.site-footer{background:var(--navy);color:#cbd5e1;padding:58px 0 30px}
+.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px}
+@media(max-width:860px){.footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.footer-grid{grid-template-columns:1fr}}
+.site-footer h4{color:#fff;font-size:.82rem;text-transform:uppercase;letter-spacing:.12em;margin-bottom:14px}
+.site-footer a{color:#cbd5e1;font-size:.9rem;display:block;padding:4px 0;background:none;border:none;text-align:left}
+.site-footer a:hover{color:#fff}
+.site-footer p{font-size:.88rem;color:#94a3b8}
+.footer-brand{display:flex;align-items:center;gap:10px;color:#fff;font-weight:800;font-size:1.1rem;margin-bottom:12px}
+.footer-bottom{border-top:1px solid rgba(255,255,255,.12);margin-top:36px;padding-top:22px;display:flex;flex-wrap:wrap;gap:12px;justify-content:space-between;font-size:.82rem;color:#94a3b8}
+
+.app-bar{position:sticky;top:0;z-index:120;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 1px 3px rgba(15,23,42,.04)}
+.app-bar-inner{display:flex;align-items:center;gap:14px;padding:11px 0;flex-wrap:wrap}
+.app-tabs{display:flex;gap:4px;flex:1;overflow-x:auto}
+.tab{border:none;background:transparent;color:var(--slate);font-weight:600;font-size:.9rem;padding:9px 15px;border-radius:9px;white-space:nowrap;transition:background .15s,color .15s}
+.tab:hover{background:var(--bg2);color:var(--navy)}
+.tab.active{background:var(--accent-s);color:var(--accent-d)}
+.tab.is-locked{color:var(--muted)}
+.tab.is-locked::after{content:" 🔒";font-size:.72em;opacity:.7}
+.app-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;padding:28px 0 70px;align-items:start}
+@media(max-width:1080px){.workspace{grid-template-columns:1fr;gap:20px}}
+.panel{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line);background:#fbfcfe}
+.panel-head h2{font-size:1.02rem;margin:0}
+.panel-body{padding:20px}
+.acc{border-bottom:1px solid var(--line)}
+.acc:last-child{border-bottom:none}
+.acc-head{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;background:none;border:none;padding:16px 20px;text-align:left;font-weight:700;font-size:.95rem;color:var(--navy)}
+.acc-head:hover{background:#fafbfd}
+.acc-head .chev{color:var(--muted);font-size:.8rem;transition:transform .2s;flex:none}
+.acc.open .acc-head .chev{transform:rotate(90deg)}
+.acc-body{display:none;padding:4px 20px 22px}
+.acc.open .acc-body{display:block}
+.mobile-switch{display:none;gap:8px;padding:14px 0 0}
+@media(max-width:1080px){.mobile-switch{display:flex}}
+.mobile-switch .btn{flex:1}
+@media(max-width:1080px){
+  .workspace.mode-preview .editor-col{display:none}
+  .workspace.mode-edit .preview-col{display:none}
+}
+.preview-sticky{position:sticky;top:96px}
+@media(max-width:1080px){.preview-sticky{position:static}}
+.doc-toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:14px 20px;border-bottom:1px solid var(--line);background:#fbfcfe}
+.swatches{display:flex;gap:6px;align-items:center}
+.swatch{width:24px;height:24px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px var(--line2);padding:0;position:relative;transition:opacity .15s}
+.swatch.active{box-shadow:0 0 0 2px var(--accent)}
+.swatch.locked{opacity:.35}
+.swatch.locked::after{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;font-size:.7rem;filter:grayscale(1)}
+.preview-scroll{padding:24px;background:var(--bg2);max-height:calc(100vh - 190px);overflow:auto}
+@media(max-width:1080px){.preview-scroll{max-height:none}}
+.help-box{background:var(--accent-s);border:1px solid var(--accent-l);border-radius:12px;padding:14px 16px;margin-bottom:16px;font-size:.87rem;color:var(--slate)}
+.help-box strong{color:var(--navy);display:block;margin-bottom:6px}
+.help-box.lock{background:#fef3c7;border-color:#fde68a;color:#78350f}
+.help-box.lock strong{color:#78350f}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 16px}
+.chip{border:1px solid var(--line2);background:#fff;border-radius:999px;padding:6px 13px;font-size:.82rem;font-weight:600;color:var(--slate);transition:background .15s,border-color .15s,color .15s}
+.chip:hover{background:var(--accent-s);border-color:var(--accent-l);color:var(--accent-d)}
+.checklist li{display:flex;gap:10px;align-items:flex-start;padding:7px 0;font-size:.9rem;color:var(--slate);border-bottom:1px dashed var(--line)}
+.checklist li:last-child{border-bottom:none}
+.checklist .mark{flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:.72rem;font-weight:800;margin-top:2px}
+.checklist li.ok .mark{background:#dcfce7;color:#15803d}
+.checklist li.todo .mark{background:#fef3c7;color:#b45309}
+.example-list li{font-size:.87rem;color:var(--slate);padding:9px 0;border-bottom:1px dashed var(--line)}
+.example-list li:last-child{border-bottom:none}
+.example-list .lbl{display:inline-block;font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#b45309;background:#fef3c7;border-radius:999px;padding:2px 8px;margin-bottom:6px}
+
+.doc{background:#fff;width:100%;max-width:794px;margin:0 auto;padding:46px 50px 52px;box-shadow:var(--sh2);border-radius:4px;color:#1f2937;font-size:13.2px;line-height:1.55}
+.doc h1{font-size:26px;margin:0 0 2px;letter-spacing:-.02em;color:var(--doc-accent);line-height:1.15}
+.doc .doc-role{font-size:13.5px;font-weight:700;color:var(--doc-accent);margin-bottom:8px}
+.doc .doc-contact{font-size:11.4px;color:#5b6472;display:flex;flex-wrap:wrap;gap:3px 12px}
+.doc .doc-contact a{color:#5b6472;text-decoration:none;word-break:break-word}
+.doc-head{padding-bottom:12px;border-bottom:1.5px solid var(--doc-accent);margin-bottom:18px}
+.doc-sec{margin-bottom:17px;page-break-inside:avoid;break-inside:avoid}
+.doc-sec > h2{font-size:11.4px;text-transform:uppercase;letter-spacing:.13em;color:var(--doc-accent);margin:0 0 8px;padding-bottom:4px;border-bottom:1px solid #e5e7eb;font-weight:800}
+.doc-sec p{margin:0 0 6px}
+.doc-item{margin-bottom:12px;page-break-inside:avoid;break-inside:avoid}
+.doc-item:last-child{margin-bottom:0}
+.doc-item-head{display:flex;justify-content:space-between;gap:14px;align-items:baseline;flex-wrap:wrap}
+.doc-item-title{font-weight:700;font-size:13.4px;color:#111827}
+.doc-item-sub{font-size:12.4px;color:#4b5563;font-weight:600}
+.doc-item-meta{font-size:11.4px;color:#6b7280;white-space:nowrap}
+.doc-item ul{margin:5px 0 0;padding-left:17px;list-style:disc}
+.doc-item li{margin-bottom:2px}
+.doc-skills{display:flex;flex-wrap:wrap;gap:6px}
+.doc-skills span{border:1px solid var(--doc-accent);color:var(--doc-accent);border-radius:999px;padding:2px 10px;font-size:11.4px;font-weight:600}
+.doc-empty{text-align:center;padding:70px 26px;color:var(--muted)}
+.doc-empty h3{font-size:1.05rem;color:var(--slate);margin-bottom:8px}
+.doc-empty p{font-size:.88rem;margin:0}
+.doc.tpl-modern .doc-head{border-bottom-width:2px}
+.doc.tpl-classic{font-family:var(--serif)}
+.doc.tpl-classic .doc-head{text-align:center;border-bottom:2.5px double var(--doc-accent)}
+.doc.tpl-classic .doc-head h1{color:var(--doc-accent);font-family:var(--serif);letter-spacing:0}
+.doc.tpl-classic .doc-role{color:var(--doc-accent);font-weight:400;font-style:italic;opacity:.9}
+.doc.tpl-classic .doc-contact{justify-content:center;color:#4b5563}
+.doc.tpl-classic .doc-sec > h2{color:var(--doc-accent);text-align:center;letter-spacing:.18em;border-bottom:1px solid #d1d5db}
+.doc.tpl-classic .doc-skills span{border-color:var(--doc-accent);color:var(--doc-accent)}
+.doc.tpl-minimal{padding:52px 56px;font-size:13px}
+.doc.tpl-minimal .doc-head{border-bottom:1px solid #e5e7eb}
+.doc.tpl-minimal .doc-head h1{color:var(--doc-accent);font-weight:700}
+.doc.tpl-minimal .doc-role{color:#6b7280;font-weight:500}
+.doc.tpl-minimal .doc-sec > h2{color:var(--doc-accent);letter-spacing:.2em;font-size:10.4px;border-bottom:none;margin-bottom:6px}
+.doc.tpl-minimal .doc-skills span{border:none;background:#f3f4f6;color:var(--doc-accent)}
+.doc.tpl-creative{padding:0 0 52px}
+.doc.tpl-creative .doc-head{background:var(--doc-accent);color:#fff;padding:38px 50px 30px;border-bottom:none;margin-bottom:22px;border-radius:4px 4px 0 0}
+.doc.tpl-creative .doc-head h1{color:#fff}
+.doc.tpl-creative .doc-role{color:rgba(255,255,255,.85)}
+.doc.tpl-creative .doc-contact{color:rgba(255,255,255,.85)}
+.doc.tpl-creative .doc-contact a{color:rgba(255,255,255,.85)}
+.doc.tpl-creative .doc-body{padding:0 50px}
+.doc.tpl-creative .doc-sec > h2{color:var(--doc-accent)}
+.doc.tpl-creative .doc-skills span{background:var(--doc-accent);color:#fff;border-color:var(--doc-accent)}
+
+.letter{background:#fff;width:100%;max-width:794px;margin:0 auto;padding:56px 58px;box-shadow:var(--sh2);border-radius:4px;color:#1f2937;font-family:var(--serif);font-size:13.6px;line-height:1.7;white-space:pre-wrap;word-wrap:break-word}
+.letter.empty{font-family:var(--font);color:var(--muted);text-align:center;padding:80px 30px;white-space:normal}
+
+#printArea{display:none}
+@media print{
+  @page{size:A4;margin:12mm}
+  html,body{background:#fff!important}
+  .site-nav,.site-footer,#landingView,#appView,#coverView,#toast,.modal-backdrop,.no-print{display:none!important}
+  #printArea{display:block!important}
+  #printArea .doc,#printArea .letter{box-shadow:none!important;border:0!important;border-radius:0!important;max-width:none!important;width:100%!important;margin:0!important;padding:0!important}
+  #printArea .doc.tpl-creative{padding:0 0 20px!important}
+  #printArea .doc.tpl-creative .doc-head{padding:22px 26px 18px!important;border-radius:0!important;margin-bottom:16px!important}
+  #printArea .doc.tpl-creative .doc-body{padding:0 26px!important}
+  #printArea .doc-sec,#printArea .doc-item{page-break-inside:avoid;break-inside:avoid}
+  #printArea .doc-sec > h2,#printArea .doc-item-title{page-break-after:avoid;break-after:avoid}
+  #printArea .letter{padding:0!important}
+}
+
+.tier-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;font-size:.72rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--bg2);color:var(--slate);border:1px solid var(--line);cursor:pointer;transition:background .15s,color .15s,border-color .15s}
+.tier-badge:hover{background:#e2e8f0;color:var(--navy)}
+.tier-badge.pro{background:var(--accent-s);color:var(--accent-d);border-color:var(--accent-l)}
+.tier-badge.pro:hover{background:#dbeafe}
+.tier-badge.bundle{background:#fef3c7;color:#92400e;border-color:#fde68a}
+.tier-badge.bundle:hover{background:#fde68a}
+.btn.is-locked::after{content:"🔒";font-size:.85em;margin-left:2px;opacity:.85}
+.restore-link{display:inline-block;background:none;border:none;padding:0;color:var(--accent);font-weight:600;font-size:.88rem;text-decoration:underline;cursor:pointer}
+.restore-link:hover{color:var(--accent-d)}
+</style>
+</head>
+<body>
+
+<!-- ============================ LANDING ============================ -->
+<div id="landingView">
+  <nav class="site-nav" aria-label="Main navigation">
+    <div class="container nav-inner">
+      <button class="brand" type="button" data-goto="home">
+        <span class="brand-mark" aria-hidden="true">RC</span> ResumeCraft
+      </button>
+      <button class="nav-toggle" type="button" id="navToggle" aria-expanded="false" aria-controls="navLinks">☰ Menu</button>
+      <div class="nav-links" id="navLinks">
+        <a href="#home" data-nav>Home</a>
+        <a href="#resume-builder" data-nav data-open="resume">Resume Builder</a>
+        <a href="#cover-letter" data-nav data-open="cover">Cover Letter Builder</a>
+        <a href="#templates" data-nav>Templates</a>
+        <a href="#pricing" data-nav>Pricing</a>
+        <button class="btn btn-primary" type="button" data-open="resume">Build My Resume</button>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero" id="home">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">Free resume &amp; cover letter builder</span>
+        <h1>Build a Resume That Gets You Noticed.</h1>
+        <p class="lead">Create a professional resume and tailored cover letter in minutes. No design skills required.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary btn-lg" type="button" data-open="resume">Create My Resume</button>
+          <a class="btn btn-outline btn-lg" href="#templates" data-nav>Explore Templates</a>
+        </div>
+        <ul class="hero-points">
+          <li>Live preview as you type</li>
+          <li>Four professional templates</li>
+          <li>Print or save as PDF</li>
+          <li>Saved privately in your browser</li>
+        </ul>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="mock-page">
+          <div class="mock-head">
+            <div class="mock-name">Jordan Miller</div>
+            <div class="mock-role">Customer Service Team Leader</div>
+            <div class="mock-contact"><span>jordan@email.com</span><span>0400 000 000</span><span>Brisbane, Australia</span></div>
+          </div>
+          <div class="mock-sec"><div class="mock-h"></div><div class="mock-line w95"></div><div class="mock-line w85"></div></div>
+          <div class="mock-sec"><div class="mock-h"></div><div class="mock-line w75"></div><div class="mock-line w95"></div><div class="mock-line w60"></div></div>
+          <div class="mock-sec"><div class="mock-h"></div><div class="mock-chips"><span class="mock-chip"></span><span class="mock-chip"></span><span class="mock-chip"></span><span class="mock-chip"></span></div></div>
+          <div class="mock-sec"><div class="mock-h"></div><div class="mock-line w85"></div><div class="mock-line w45"></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="how">
+    <div class="container">
+      <div class="section-head">
+        <h2>How it works</h2>
+        <p>Three simple steps from blank page to a finished resume you can send today.</p>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><h3>Enter your details</h3><p>Fill in your work history, education and skills. The preview updates as you type, so you always see the finished result.</p></div>
+        <div class="step"><div class="step-num">2</div><h3>Choose a professional template</h3><p>Switch between four layouts and pick an accent colour that suits the job you are applying for.</p></div>
+        <div class="step"><div class="step-num">3</div><h3>Download your finished resume</h3><p>Export a clean PDF or print it directly. Your work is saved in your browser automatically.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-head">
+        <h2>Everything you need to apply with confidence</h2>
+        <p>Built for students, part-time workers, trades, career changers and experienced professionals.</p>
+      </div>
+      <div class="feature-grid">
+        <div class="feature"><div class="feature-icon">▤</div><h3>Professional resume templates</h3><p>Four recruiter-friendly layouts designed for real hiring in Australia and beyond.</p></div>
+        <div class="feature"><div class="feature-icon">◉</div><h3>Live editing and preview</h3><p>See exactly how your resume looks on the page while you type. No guessing.</p></div>
+        <div class="feature"><div class="feature-icon">✉</div><h3>Tailored cover letters</h3><p>Generate a draft cover letter from your details, then edit it until it sounds like you.</p></div>
+        <div class="feature"><div class="feature-icon">◐</div><h3>Customisable colours and layouts</h3><p>Change the accent colour and template to match the role and industry.</p></div>
+        <div class="feature"><div class="feature-icon">⇩</div><h3>PDF-ready documents</h3><p>Export to PDF or print on A4 with clean margins and no page-break mess.</p></div>
+        <div class="feature"><div class="feature-icon">▭</div><h3>Works on desktop and mobile</h3><p>Edit on your phone and switch to preview mode without endless scrolling.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt" id="templates">
+    <div class="container">
+      <div class="section-head">
+        <h2>Template gallery</h2>
+        <p>Pick a starting point. You can change your mind at any time without losing your content.</p>
+      </div>
+      <div class="template-grid" id="templateGallery"></div>
+    </div>
+  </section>
+
+  <section class="section" id="pricing">
+    <div class="container">
+      <div class="section-head">
+        <h2>Simple pricing</h2>
+        <p>One-time payments. No subscriptions, no auto-renewals. Start free, upgrade when you need to.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <h3>Free</h3>
+          <div class="price-amount">$0</div>
+          <p class="price-desc">Everything you need to build and print a solid resume.</p>
+          <ul class="price-list">
+            <li>Basic resume editor</li>
+            <li>Two templates</li>
+            <li>Live preview</li>
+            <li>Browser printing</li>
+          </ul>
+          <button class="btn btn-outline btn-block" type="button" data-plan="Free">Start free</button>
+        </div>
+        <div class="price-card featured">
+          <span class="price-badge">Most popular</span>
+          <h3>Professional</h3>
+          <div class="price-amount">$9 <span>one-time</span></div>
+          <p class="price-desc">For anyone applying seriously and applying often.</p>
+          <ul class="price-list">
+            <li>All four resume templates</li>
+            <li>Cover letter builder</li>
+            <li>Custom accent colours</li>
+            <li>One-click PDF export</li>
+          </ul>
+          <button class="btn btn-primary btn-block" type="button" data-plan="Professional">Choose Professional</button>
+        </div>
+        <div class="price-card">
+          <h3>Career Bundle</h3>
+          <div class="price-amount">$19 <span>one-time</span></div>
+          <p class="price-desc">For career changers managing several applications at once.</p>
+          <ul class="price-list">
+            <li>Everything in Professional</li>
+            <li>Resume writing assistance</li>
+            <li>Vague-wording checker</li>
+            <li>JSON backup and restore</li>
+          </ul>
+          <button class="btn btn-outline btn-block" type="button" data-plan="Career Bundle">Choose Career Bundle</button>
+        </div>
+      </div>
+      <p style="text-align:center;margin-top:26px">
+        <button class="restore-link" type="button" id="restorePurchase1">Already purchased? Restore access</button>
+      </p>
+    </div>
+  </section>
+
+  <section class="section alt" id="faq">
+    <div class="container">
+      <div class="section-head">
+        <h2>Frequently asked questions</h2>
+        <p>Short answers to the questions people ask before they start.</p>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item"><summary>Do I need any resume writing experience?</summary><div class="faq-body"><p>No. Fill in the fields in plain language and the builder handles the layout, spacing and headings. The writing assistance panel also includes example summaries and achievement bullet points you can adapt — but they are labelled as examples, so only use what is genuinely true for you.</p></div></details>
+        <details class="faq-item"><summary>Can I edit a template after choosing it?</summary><div class="faq-body"><p>Yes. Switching templates never deletes your content. You can also change the accent colour at any time from the preview toolbar.</p></div></details>
+        <details class="faq-item"><summary>How do I download my resume?</summary><div class="faq-body"><p>Use the <strong>Download PDF</strong> button in the builder. If the PDF library cannot be loaded (for example, you are offline), ResumeCraft automatically opens your browser's print dialog instead, where you can choose "Save as PDF".</p></div></details>
+        <details class="faq-item"><summary>Is my personal information private?</summary><div class="faq-body"><p>Yes. Everything you type is stored only in your own browser using <code>localStorage</code>. ResumeCraft does not send your resume anywhere and does not collect personal information. If you clear your browser data, the saved copy is removed — so export a JSON backup if you want a permanent copy.</p></div></details>
+        <details class="faq-item"><summary>What happens after I pay?</summary><div class="faq-body"><p>You'll be redirected to Stripe's secure checkout. Once your payment goes through, you'll be sent back here and your features unlock automatically on this browser. Your Stripe receipt email contains a link to view the order — that link is your proof of purchase if you ever need to unlock on a different device. Click <strong>Already purchased? Restore access</strong> on the pricing section to enter it.</p></div></details>
+        <details class="faq-item"><summary>Can I use this on my phone?</summary><div class="faq-body"><p>Yes. On smaller screens you can switch between the editor and the preview with the buttons above the workspace, so you are not scrolling past a long form to check your layout.</p></div></details>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand"><span class="brand-mark" aria-hidden="true">RC</span> ResumeCraft</div>
+          <p>A free, private resume and cover letter builder that runs entirely in your browser. No account required.</p>
+        </div>
+        <div>
+          <h4>Product</h4>
+          <a href="#resume-builder" data-nav data-open="resume">Resume Builder</a>
+          <a href="#cover-letter" data-nav data-open="cover">Cover Letter Builder</a>
+          <a href="#templates" data-nav>Templates</a>
+          <a href="#pricing" data-nav>Pricing</a>
+        </div>
+        <div>
+          <h4>Learn</h4>
+          <a href="#how" data-nav>How it works</a>
+          <a href="#features" data-nav>Features</a>
+          <a href="#faq" data-nav>FAQ</a>
+        </div>
+        <div>
+          <h4>Legal</h4>
+          <a href="#privacy" data-privacy>Privacy statement</a>
+          <a href="#terms" data-terms>Terms of use</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© <span id="year"></span> ResumeCraft. Demo build for local use.</span>
+        <span>Your data never leaves this browser.</span>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ============================ RESUME BUILDER ============================ -->
+<div id="appView" hidden>
+  <div class="app-bar no-print">
+    <div class="container app-bar-inner">
+      <button class="brand" type="button" data-goto="home"><span class="brand-mark" aria-hidden="true">RC</span> ResumeCraft</button>
+      <div class="app-tabs" role="tablist">
+        <button class="tab active" type="button" role="tab" data-view="resume">Resume Builder</button>
+        <button class="tab" type="button" role="tab" data-view="cover">Cover Letter</button>
+      </div>
+      <div class="app-actions">
+        <button class="tier-badge" id="tierBadge" type="button" title="Click to manage your plan">Free</button>
+        <button class="btn btn-ghost btn-sm" type="button" id="btnNew">New</button>
+        <button class="btn btn-ghost btn-sm" type="button" id="btnBackup">Backup</button>
+        <button class="btn btn-outline btn-sm" type="button" id="btnPrint">Print</button>
+        <button class="btn btn-primary btn-sm" type="button" id="btnPdf">Download PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="mobile-switch no-print">
+      <button class="btn btn-outline btn-sm" type="button" data-mode="edit" id="modeEdit">Edit details</button>
+      <button class="btn btn-outline btn-sm" type="button" data-mode="preview" id="modePreview">Preview resume</button>
+    </div>
+
+    <div class="workspace mode-edit" id="resumeWorkspace">
+      <div class="editor-col">
+        <div class="panel">
+          <div class="panel-head">
+            <h2>Your details</h2>
+            <span class="hint" style="margin:0">Saved automatically</span>
+          </div>
+
+          <div class="acc open" data-acc>
+            <button class="acc-head" type="button">Personal information <span class="chev">▶</span></button>
+            <div class="acc-body">
+              <div class="grid-2">
+                <div class="field"><label for="p-name">Full name</label><input type="text" id="p-name" data-personal="fullName" placeholder="Jordan Miller" autocomplete="name"></div>
+                <div class="field"><label for="p-title">Professional title</label><input type="text" id="p-title" data-personal="title" placeholder="Customer Service Team Leader"></div>
+                <div class="field"><label for="p-email">Email</label><input type="email" id="p-email" data-personal="email" placeholder="jordan@email.com" autocomplete="email"></div>
+                <div class="field"><label for="p-phone">Phone</label><input type="text" id="p-phone" data-personal="phone" placeholder="0400 000 000" autocomplete="tel"></div>
+                <div class="field"><label for="p-location">City and country</label><input type="text" id="p-location" data-personal="location" placeholder="Brisbane, Australia"></div>
+                <div class="field"><label for="p-linkedin">LinkedIn URL</label><input type="url" id="p-linkedin" data-personal="linkedin" placeholder="linkedin.com/in/jordanmiller"></div>
+                <div class="field"><label for="p-portfolio">Portfolio URL <span class="hint" style="display:inline">(optional)</span></label><input type="url" id="p-portfolio" data-personal="portfolio" placeholder="jordanmiller.com"></div>
+              </div>
+              <div class="field">
+                <label for="p-summary">Professional summary</label>
+                <textarea id="p-summary" data-personal="summary" placeholder="Two or three sentences describing what you do, your strongest skills and what you are looking for."></textarea>
+                <p class="hint">Tip: the <strong>Writing assistance</strong> section below has example summaries you can adapt.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="acc" data-acc>
+            <button class="acc-head" type="button">Work experience <span class="chev">▶</span></button>
+            <div class="acc-body">
+              <p class="hint" style="margin-bottom:12px">Add one entry per job, most recent first. No paid work yet? Add volunteering, casual or school-based work — it all counts.</p>
+              <div id="expList"></div>
+              <button class="btn btn-outline btn-sm" type="button" id="addExp">+ Add experience</button>
+            </div>
+          </div>
+
+          <div class="acc" data-acc>
+            <button class="acc-head" type="button">Education <span class="chev">▶</span></button>
+            <div class="acc-body">
+              <div id="eduList"></div>
+              <button class="btn btn-outline btn-sm" type="button" id="addEdu">+ Add education</button>
+            </div>
+          </div>
+
+          <div class="acc" data-acc>
+            <button class="acc-head" type="button">Skills <span class="chev">▶</span></button>
+            <div class="acc-body">
+              <p class="hint" style="margin-bottom:10px">Type a skill and press Enter or click Add. Aim for 6–12 skills that appear in the job advertisement.</p>
+              <div class="tag-input">
+                <label class="sr" for="skillInput">Add a skill</label>
+                <input type="text" id="skillInput" placeholder="e.g. Customer service">
+                <button class="btn btn-outline btn-sm" type="button" id="addSkill">Add</button>
+              </div>
+              <div class="tags" id="skillTags"></div>
+            </div>
+          </div>
+
+          <div class="acc" data-acc>
+            <button class="acc-head" type="button">Projects <span class="chev">▶</span></button>
+            <div class="acc-body">
+              <div id="projList"></div>
+              <button class="btn btn-outline btn-sm" type="button" id="addProj">+ Add project</button>
+            </div>
+          </div>
+
+          <div class="acc" data-acc>
+            <button class="acc-head" type="button">Certifications <span class="chev">▶</span></button>
+            <div class="acc-body">
+              <div id="certList"></div>
+              <button class="btn btn-outline btn-sm" type="button" id="addCert">+ Add certification</button>
+            </div>
+          </div>
+
+          <div class="acc" data-acc>
+            <button class="acc-head" type="button">Additional sections <span class="chev">▶</span></button>
+            <div class="acc-body">
+              <p class="hint" style="margin-bottom:14px">Turn on the sections that are relevant to you. Empty sections are hidden from the resume automatically.</p>
+              <div id="optionalToggles"></div>
+              <div id="optionalLists"></div>
+            </div>
+          </div>
+
+          <div class="acc" data-acc>
+            <button class="acc-head" type="button">Writing assistance <span class="chev">▶</span></button>
+            <div class="acc-body" id="writingHelp"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="preview-col">
+        <div class="preview-sticky">
+          <div class="panel">
+            <div class="doc-toolbar no-print">
+              <label class="sr" for="templateSelect">Template</label>
+              <select id="templateSelect" style="padding:8px 10px;border:1px solid var(--line);border-radius:9px;font-size:.87rem">
+                <option value="modern">Modern Professional</option>
+                <option value="classic">Classic Corporate</option>
+                <option value="minimal">Minimal Clean</option>
+                <option value="creative">Creative Modern</option>
+              </select>
+              <div class="swatches" id="swatches" role="group" aria-label="Accent colour"></div>
+              <label class="sr" for="accentCustom">Custom accent colour</label>
+              <input type="color" id="accentCustom" value="#2563eb" title="Custom accent colour" style="width:34px;height:30px;border:1px solid var(--line);border-radius:8px;background:#fff;padding:2px;cursor:pointer">
+            </div>
+            <div class="preview-scroll">
+              <div id="resumePreview"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================ COVER LETTER ============================ -->
+<div id="coverView" hidden>
+  <div class="app-bar no-print">
+    <div class="container app-bar-inner">
+      <button class="brand" type="button" data-goto="home"><span class="brand-mark" aria-hidden="true">RC</span> ResumeCraft</button>
+      <div class="app-tabs" role="tablist">
+        <button class="tab" type="button" role="tab" data-view="resume">Resume Builder</button>
+        <button class="tab active" type="button" role="tab" data-view="cover">Cover Letter</button>
+      </div>
+      <div class="app-actions">
+        <button class="tier-badge" id="tierBadgeCover" type="button" title="Click to manage your plan">Free</button>
+        <button class="btn btn-ghost btn-sm" type="button" id="clNew">Clear letter</button>
+        <button class="btn btn-outline btn-sm" type="button" id="clPrint">Print</button>
+        <button class="btn btn-primary btn-sm" type="button" id="clPdf">Download PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="mobile-switch no-print">
+      <button class="btn btn-outline btn-sm" type="button" data-mode="edit" id="clModeEdit">Edit details</button>
+      <button class="btn btn-outline btn-sm" type="button" data-mode="preview" id="clModePreview">Preview letter</button>
+    </div>
+
+    <div class="workspace mode-edit" id="coverWorkspace">
+      <div class="editor-col">
+        <div class="panel">
+          <div class="panel-head"><h2>Cover letter details</h2><span class="hint" style="margin:0">Saved automatically</span></div>
+          <div class="panel-body">
+            <div class="help-box">
+              <strong>How generation works</strong>
+              ResumeCraft builds your letter from a set of writing templates using only the information you enter. It is not an AI service and it will never invent qualifications, employers or achievements for you. Treat the result as a first draft and edit it.
+            </div>
+
+            <h3 style="font-size:.92rem;margin:18px 0 10px">Your details</h3>
+            <div class="grid-2">
+              <div class="field"><label for="c-name">Your name</label><input type="text" id="c-name" data-cover="name" placeholder="Jordan Miller"></div>
+              <div class="field"><label for="c-email">Email</label><input type="email" id="c-email" data-cover="email" placeholder="jordan@email.com"></div>
+              <div class="field"><label for="c-phone">Phone</label><input type="text" id="c-phone" data-cover="phone" placeholder="0400 000 000"></div>
+              <div class="field"><label for="c-location">City and country</label><input type="text" id="c-location" data-cover="location" placeholder="Brisbane, Australia"></div>
+            </div>
+
+            <h3 style="font-size:.92rem;margin:18px 0 10px">The job</h3>
+            <div class="grid-2">
+              <div class="field"><label for="c-jobTitle">Job title</label><input type="text" id="c-jobTitle" data-cover="jobTitle" placeholder="Customer Service Officer"></div>
+              <div class="field"><label for="c-company">Company</label><input type="text" id="c-company" data-cover="company" placeholder="Northside Retail Group"></div>
+              <div class="field"><label for="c-employer">Employer name <span class="hint" style="display:inline">(if different)</span></label><input type="text" id="c-employer" data-cover="employer" placeholder="Northside Retail Group"></div>
+              <div class="field"><label for="c-manager">Hiring manager <span class="hint" style="display:inline">(optional)</span></label><input type="text" id="c-manager" data-cover="manager" placeholder="Ms Priya Raman"></div>
+            </div>
+            <div class="field"><label for="c-ad">Job advertisement or description</label><textarea id="c-ad" data-cover="ad" placeholder="Paste the key parts of the advertisement — duties, selection criteria, what they are looking for."></textarea></div>
+
+            <h3 style="font-size:.92rem;margin:18px 0 10px">What you want to say</h3>
+            <div class="field"><label for="c-experience">Relevant experience</label><textarea id="c-experience" data-cover="experience" placeholder="Describe the experience that matches this job. Mention the role, where you worked and what you achieved."></textarea></div>
+            <div class="field"><label for="c-skills">Key skills</label><textarea id="c-skills" data-cover="skills" placeholder="e.g. conflict resolution, POS systems, rostering, Microsoft Excel"></textarea></div>
+            <div class="field"><label for="c-why">Why you want this job</label><textarea id="c-why" data-cover="why" placeholder="What attracts you to this role and this company?"></textarea></div>
+            <div class="field"><label for="c-notes">Additional notes <span class="hint" style="display:inline">(optional)</span></label><textarea id="c-notes" data-cover="notes" placeholder="Availability, right to work, referees, anything else you want included."></textarea></div>
+
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:6px">
+              <button class="btn btn-primary" type="button" id="btnGenerate">Generate Cover Letter</button>
+              <button class="btn btn-outline" type="button" id="btnPullResume">Pull details from my resume</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="preview-col">
+        <div class="preview-sticky">
+          <div class="panel">
+            <div class="panel-head">
+              <h2>Letter preview</h2>
+              <span class="hint" style="margin:0">Fully editable</span>
+            </div>
+            <div class="preview-scroll" style="background:var(--bg2)">
+              <div id="letterPreview"></div>
+              <div class="field" style="margin-top:18px" id="letterEditWrap">
+                <label for="letterText">Edit the generated letter</label>
+                <textarea id="letterText" data-cover="body" style="min-height:340px;font-family:var(--serif);font-size:.92rem" placeholder="Generate a draft, then edit it here."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="printArea" aria-hidden="true"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+"use strict";
+/* ============================================================
+   ResumeCraft — application script
+   ============================================================ */
+
+/* ---------- 1. Helpers ---------- */
+const $ = (sel, root) => (root || document).querySelector(sel);
+const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
+
+function el(tag, props, ...kids) {
+  const node = document.createElement(tag);
+  props = props || {};
+  Object.keys(props).forEach(key => {
+    const val = props[key];
+    if (val === null || val === undefined || val === false) return;
+    if (key === "class") node.className = val;
+    else if (key === "text") node.textContent = val;
+    else if (key.slice(0, 2) === "on") node.addEventListener(key.slice(2).toLowerCase(), val);
+    else if (val === true) node.setAttribute(key, "");
+    else node.setAttribute(key, val);
+  });
+  kids.forEach(kid => {
+    if (kid === null || kid === undefined || kid === false) return;
+    if (Array.isArray(kid)) kid.forEach(k => node.appendChild(k.nodeType ? k : document.createTextNode(String(k))));
+    else node.appendChild(kid.nodeType ? kid : document.createTextNode(String(kid)));
+  });
+  return node;
+}
+
+const uid = () => Math.random().toString(36).slice(2, 10) + Date.now().toString(36).slice(-3);
+
+function toast(message) {
+  const box = $("#toast");
+  box.textContent = message;
+  box.classList.add("show");
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => box.classList.remove("show"), 3600);
+}
+
+function download(filename, text, type) {
+  const blob = new Blob([text], { type: type || "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+function safeFilename(base) {
+  return String(base || "resume").replace(/[^a-z0-9\-_ ]/gi, "").trim().replace(/\s+/g, "-").toLowerCase() || "document";
+}
+
+function toLines(text) {
+  return String(text || "")
+    .split(/\r?\n/)
+    .map(l => l.replace(/^[\s•\-*\u2022]+/, "").trim())
+    .filter(Boolean);
+}
+
+function joinNice(parts) {
+  const list = parts.filter(Boolean);
+  if (!list.length) return "";
+  if (list.length === 1) return list[0];
+  if (list.length === 2) return list[0] + " and " + list[1];
+  return list.slice(0, -1).join(", ") + " and " + list[list.length - 1];
+}
+
+function fmtMonth(value) {
+  if (!value) return "";
+  const parts = String(value).split("-");
+  if (parts.length < 2) return value;
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  const m = parseInt(parts[1], 10);
+  return (months[m - 1] || parts[1]) + " " + parts[0];
+}
+
+function dateRange(start, end, current) {
+  const a = fmtMonth(start);
+  const b = current ? "Present" : fmtMonth(end);
+  if (a && b) return a + " – " + b;
+  if (a) return a + " – Present";
+  if (b) return b;
+  return "";
+}
+
+function nextFrame() {
+  return new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => r())));
+}
+
+/* ---------- 2. State & persistence ---------- */
+const STORAGE_KEY = "resumecraft.v1";
+const TIER_KEY = "resumecraft.tier";
+const SESSION_KEY = "resumecraft.session";
+const ACCENTS = ["#2563eb", "#0f766e", "#7c3aed", "#b45309", "#be123c", "#0f172a"];
+
+/* ---- Stripe payment links ---- */
+const STRIPE_LINKS = {
+  pro: "https://buy.stripe.com/5kQ9ASaD76x61FZ6CtdjO03",
+  bundle: "https://buy.stripe.com/bJe14m3aF7BackDbWNdjO02"
+};
+
+/* ---- Session validation ----
+   Stripe Checkout session IDs always start with "cs_live_" or "cs_test_"
+   followed by a long alphanumeric string. We validate the format so an
+   obvious typo or dummy value is rejected. Real verification against
+   Stripe's API needs a small serverless endpoint. */
+function isValidSessionFormat(s) {
+  if (typeof s !== "string") return false;
+  const trimmed = s.trim();
+  if (trimmed.length < 30 || trimmed.length > 300) return false;
+  return /^cs_(live|test)_[A-Za-z0-9]{20,}$/.test(trimmed);
+}
+
+/* Extract a session_id from raw text that may be a URL or just the ID. */
+function extractSessionId(raw) {
+  if (!raw) return "";
+  const text = String(raw).trim();
+  if (isValidSessionFormat(text)) return text;
+  try {
+    const url = new URL(text);
+    const sid = url.searchParams.get("session_id");
+    if (sid && isValidSessionFormat(sid)) return sid;
+  } catch (err) { /* not a URL, ignore */ }
+  const match = text.match(/cs_(live|test)_[A-Za-z0-9]+/);
+  if (match && isValidSessionFormat(match[0])) return match[0];
+  return "";
+}
+
+function getSessions() {
+  try {
+    const raw = localStorage.getItem(SESSION_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (err) { return {}; }
+}
+function storeSession(tier, sessionId) {
+  try {
+    const sessions = getSessions();
+    sessions[tier] = sessionId;
+    localStorage.setItem(SESSION_KEY, JSON.stringify(sessions));
+  } catch (err) { /* ignore */ }
+}
+function hasStoredSession(tier) {
+  const s = getSessions();
+  return isValidSessionFormat(s[tier] || "");
+}
+
+/* ---- Feature matrix ----
+   Free   : modern + classic templates, live preview, print, edit
+   Pro    : all templates, cover letter, accent colours, PDF export
+   Bundle : everything in Pro + writing assistance + JSON backup/restore */
+const FREE_TEMPLATES = ["modern", "classic"];
+
+function blankResume() {
+  return {
+    template: "modern",
+    accent: "#2563eb",
+    personal: { fullName: "", title: "", email: "", phone: "", location: "", linkedin: "", portfolio: "", summary: "" },
+    experience: [], education: [], skills: [], projects: [], certifications: [],
+    optional: {
+      volunteer: { enabled: false, items: [] },
+      languages: { enabled: false, items: [] },
+      awards: { enabled: false, items: [] },
+      references: { enabled: false, text: "" }
+    }
+  };
+}
+
+function blankCover() {
+  return {
+    name: "", email: "", phone: "", location: "",
+    employer: "", manager: "", company: "", jobTitle: "", ad: "",
+    experience: "", skills: "", why: "", notes: "", body: ""
+  };
+}
+
+let state = { tier: "free", resume: blankResume(), cover: blankCover() };
+
+function hydrate(saved) {
+  const base = { resume: blankResume(), cover: blankCover() };
+  if (!saved || typeof saved !== "object") return base;
+  const r = saved.resume && typeof saved.resume === "object" ? saved.resume : {};
+  const c = saved.cover && typeof saved.cover === "object" ? saved.cover : {};
+  const out = base;
+
+  ["template", "accent"].forEach(k => { if (typeof r[k] === "string") out.resume[k] = r[k]; });
+  Object.keys(out.resume.personal).forEach(k => { if (typeof (r.personal || {})[k] === "string") out.resume.personal[k] = r.personal[k]; });
+  ["experience", "education", "skills", "projects", "certifications"].forEach(k => {
+    if (Array.isArray(r[k])) out.resume[k] = r[k].filter(v => v && typeof v === "object");
+  });
+  if (out.resume.skills.some(s => typeof s === "object")) {
+    out.resume.skills = out.resume.skills.map(s => (typeof s === "string" ? s : String(s.name || ""))).filter(Boolean);
+  }
+  const opt = r.optional && typeof r.optional === "object" ? r.optional : {};
+  ["volunteer", "languages", "awards"].forEach(k => {
+    const src = opt[k] && typeof opt[k] === "object" ? opt[k] : {};
+    out.resume.optional[k].enabled = !!src.enabled;
+    out.resume.optional[k].items = Array.isArray(src.items) ? src.items.filter(v => v && typeof v === "object") : [];
+  });
+  const ref = opt.references && typeof opt.references === "object" ? opt.references : {};
+  out.resume.optional.references.enabled = !!ref.enabled;
+  out.resume.optional.references.text = typeof ref.text === "string" ? ref.text : "";
+
+  Object.keys(out.cover).forEach(k => { if (typeof c[k] === "string") out.cover[k] = c[k]; });
+  return out;
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const hydrated = hydrate(JSON.parse(raw));
+      state.resume = hydrated.resume;
+      state.cover = hydrated.cover;
+    }
+  } catch (err) {
+    console.warn("Saved data could not be read; starting fresh.", err);
+  }
+  /* Tier is only restored from localStorage if we also have a matching
+     session ID on file. This stops a stale tier from surviving after the
+     user clears their session data. */
+  try {
+    const storedTier = localStorage.getItem(TIER_KEY);
+    if (storedTier === "pro" || storedTier === "bundle") {
+      if (hasStoredSession(storedTier)) state.tier = storedTier;
+      else localStorage.removeItem(TIER_KEY);
+    }
+  } catch (err) { /* ignore */ }
+}
+
+let saveTimer = null;
+function saveState() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ resume: state.resume, cover: state.cover })); }
+    catch (err) { console.warn("Could not save to localStorage.", err); }
+  }, 320);
+}
+
+function saveTier() {
+  try { localStorage.setItem(TIER_KEY, state.tier); } catch (err) { /* ignore */ }
+}
+
+/* ---------- Tier helpers ---------- */
+const TIER_ORDER = { free: 0, pro: 1, bundle: 2 };
+function tierAtLeast(min) {
+  return (TIER_ORDER[state.tier] || 0) >= (TIER_ORDER[min] || 0);
+}
+function setTier(tier) {
+  if (!TIER_ORDER.hasOwnProperty(tier)) return;
+  state.tier = tier;
+  saveTier();
+  updateTierUI();
+}
+function requireTier(min, featureName) {
+  if (tierAtLeast(min)) return true;
+  showUpgradeDialog(min, featureName);
+  return false;
+}
+
+/* ---------- 3. Views & routing ---------- */
+function showLanding() {
+  $("#landingView").hidden = false;
+  $("#appView").hidden = true;
+  $("#coverView").hidden = true;
+  window.scrollTo({ top: 0, behavior: "auto" });
+}
+
+function showApp(view) {
+  if (view === "cover" && !tierAtLeast("pro")) {
+    showUpgradeDialog("pro", "the Cover Letter Builder");
+    return;
+  }
+  $("#landingView").hidden = true;
+  const isResume = view !== "cover";
+  $("#appView").hidden = !isResume;
+  $("#coverView").hidden = isResume;
+  $$(".tab").forEach(t => t.classList.toggle("active", t.dataset.view === view));
+  window.scrollTo({ top: 0, behavior: "auto" });
+  if (isResume) renderResumePreview(); else renderLetter();
+}
+
+function closeMobileNav() {
+  $("#navLinks").classList.remove("open");
+  $("#navToggle").setAttribute("aria-expanded", "false");
+}
+
+/* ---------- 4. Resume editor ---------- */
+const TEMPLATES = [
+  { id: "modern", name: "Modern Professional", desc: "A confident layout with a strong header and clear section rules. Works for almost any industry." },
+  { id: "classic", name: "Classic Corporate", desc: "Traditional serif typography with centred headings. Ideal for finance, law and government roles." },
+  { id: "minimal", name: "Minimal Clean", desc: "Lots of white space and quiet headings. Lets your experience speak for itself." },
+  { id: "creative", name: "Creative Modern", desc: "A coloured header block for design, marketing and customer-facing roles." }
+];
+
+function renderTemplateGallery() {
+  const wrap = $("#templateGallery");
+  if (!wrap) return;
+  wrap.textContent = "";
+  TEMPLATES.forEach(tpl => {
+    const locked = !FREE_TEMPLATES.includes(tpl.id) && !tierAtLeast("pro");
+    const isActive = state.resume.template === tpl.id;
+    const mini = el("div", { class: "mini tpl-" + tpl.id, "aria-hidden": "true" },
+      el("div", { class: "mini-head" }, el("div", { class: "mini-bar name" }), el("div", { class: "mini-bar role" })),
+      el("div", { class: "mini-sec" }, el("div", { class: "mini-bar h" }), el("div", { class: "mini-bar w95" }), el("div", { class: "mini-bar w75" })),
+      el("div", { class: "mini-sec" }, el("div", { class: "mini-bar h" }), el("div", { class: "mini-bar w90" }), el("div", { class: "mini-bar w60" })),
+      el("div", { class: "mini-sec" }, el("div", { class: "mini-bar h" }), el("div", { class: "mini-bar w85" }))
+    );
+    let btnLabel, btnClass;
+    if (locked) {
+      btnLabel = "Unlock with Professional";
+      btnClass = "btn btn-outline btn-sm is-locked";
+    } else if (isActive) {
+      btnLabel = "Selected";
+      btnClass = "btn btn-primary btn-sm";
+    } else {
+      btnLabel = "Use this template";
+      btnClass = "btn btn-outline btn-sm";
+    }
+    const card = el("div", { class: "template-card" + (isActive && !locked ? " is-active" : "") + (locked ? " is-locked" : "") },
+      mini,
+      el("div", { class: "template-body" },
+        el("h3", { text: tpl.name }),
+        el("p", { text: tpl.desc }),
+        el("button", {
+          class: btnClass,
+          type: "button",
+          text: btnLabel,
+          onclick: () => {
+            if (locked) {
+              showUpgradeDialog("pro", "the " + tpl.name + " template");
+              return;
+            }
+            state.resume.template = tpl.id;
+            syncTemplateControls();
+            renderTemplateGallery();
+            renderResumePreview();
+            saveState();
+            showApp("resume");
+            toast(tpl.name + " applied to your resume.");
+          }
+        })
+      )
+    );
+    wrap.appendChild(card);
+  });
+}
+
+function syncTemplateControls() {
+  const sel = $("#templateSelect");
+  if (sel) sel.value = state.resume.template;
+  const cp = $("#accentCustom");
+  if (cp) cp.value = state.resume.accent;
+  $$("#swatches .swatch").forEach(s => s.classList.toggle("active", s.dataset.color === state.resume.accent));
+}
+
+function renderSwatches() {
+  const wrap = $("#swatches");
+  if (!wrap) return;
+  wrap.textContent = "";
+  const locked = !tierAtLeast("pro");
+  ACCENTS.forEach(col => {
+    wrap.appendChild(el("button", {
+      class: "swatch" + (state.resume.accent === col ? " active" : "") + (locked ? " locked" : ""),
+      type: "button", "data-color": col, style: "background:" + col,
+      "aria-label": (locked ? "Locked: accent colour " : "Accent colour ") + col, title: col,
+      onclick: () => {
+        if (!requireTier("pro", "custom accent colours")) return;
+        state.resume.accent = col;
+        syncTemplateControls();
+        renderResumePreview();
+        saveState();
+      }
+    }));
+  });
+}
+
+const EXP_FIELDS = [
+  { key: "title", label: "Job title", ph: "Customer Service Officer" },
+  { key: "company", label: "Company", ph: "Northside Retail Group" },
+  { key: "location", label: "Location", ph: "Brisbane, QLD" }
+];
+
+function entryEditor(kind, item, index, fields, labelText, onRemove, extra) {
+  const card = el("div", { class: "item-card" });
+  card.appendChild(el("div", { class: "item-head" },
+    el("strong", { text: labelText + " " + (index + 1) }),
+    el("div", { class: "item-actions" },
+      el("button", { class: "icon-btn danger", type: "button", text: "Remove", "aria-label": "Remove " + labelText + " " + (index + 1), onclick: onRemove })
+    )
+  ));
+  const grid = el("div", { class: "grid-2" });
+  fields.forEach(f => {
+    const id = kind + "-" + item.id + "-" + f.key;
+    const input = f.type === "textarea"
+      ? el("textarea", { id: id, placeholder: f.ph || "" })
+      : el("input", { type: f.type || "text", id: id, placeholder: f.ph || "" });
+    input.value = item[f.key] || "";
+    input.addEventListener("input", () => {
+      item[f.key] = input.value;
+      saveState();
+      renderResumePreview();
+    });
+    grid.appendChild(el("div", { class: "field" }, el("label", { for: id, text: f.label }), input));
+  });
+  card.appendChild(grid);
+  if (extra) extra(card, item);
+  return card;
+}
+
+function renderExperience() {
+  const wrap = $("#expList");
+  if (!wrap) return;
+  wrap.textContent = "";
+  if (!state.resume.experience.length) wrap.appendChild(el("p", { class: "hint", style: "margin-bottom:12px", text: "No experience added yet." }));
+  state.resume.experience.forEach((job, i) => {
+    wrap.appendChild(entryEditor("exp", job, i, EXP_FIELDS, "Experience", () => {
+      state.resume.experience.splice(i, 1);
+      saveState(); renderExperience(); renderResumePreview();
+      toast("Experience entry removed.");
+    }, (card, item) => {
+      const startId = "exp-" + item.id + "-start", endId = "exp-" + item.id + "-end";
+      const start = el("input", { type: "date", id: startId });
+      start.value = item.start || "";
+      const end = el("input", { type: "date", id: endId });
+      end.value = item.end || "";
+      end.disabled = !!item.current;
+      start.addEventListener("input", () => { item.start = start.value; saveState(); renderResumePreview(); });
+      end.addEventListener("input", () => { item.end = end.value; saveState(); renderResumePreview(); });
+
+      const current = el("input", { type: "checkbox" });
+      current.checked = !!item.current;
+      current.addEventListener("change", () => {
+        item.current = current.checked;
+        end.disabled = current.checked;
+        if (current.checked) { item.end = ""; end.value = ""; }
+        saveState(); renderResumePreview();
+      });
+
+      card.appendChild(el("div", { class: "grid-2" },
+        el("div", { class: "field" }, el("label", { for: startId, text: "Start date" }), start),
+        el("div", { class: "field" }, el("label", { for: endId, text: "End date" }), end)
+      ));
+      card.appendChild(el("div", { class: "checkline" }, current, el("label", { text: "I currently work here" })));
+
+      const descId = "exp-" + item.id + "-description";
+      const desc = el("textarea", { id: descId, placeholder: "One achievement per line, starting with an action verb." });
+      desc.value = item.description || "";
+      desc.addEventListener("input", () => { item.description = desc.value; saveState(); renderResumePreview(); });
+      card.appendChild(el("div", { class: "field" }, el("label", { for: descId, text: "Description and achievements (one per line)" }), desc));
+    }));
+  });
+}
+
+function renderEducation() {
+  const wrap = $("#eduList");
+  if (!wrap) return;
+  wrap.textContent = "";
+  if (!state.resume.education.length) wrap.appendChild(el("p", { class: "hint", style: "margin-bottom:12px", text: "No education added yet." }));
+  state.resume.education.forEach((ed, i) => {
+    wrap.appendChild(entryEditor("edu", ed, i, [
+      { key: "qualification", label: "Qualification", ph: "Certificate III in Business" },
+      { key: "institution", label: "Institution", ph: "Brisbane TAFE" },
+      { key: "location", label: "Location", ph: "Brisbane, QLD" }
+    ], "Education", () => {
+      state.resume.education.splice(i, 1);
+      saveState(); renderEducation(); renderResumePreview();
+      toast("Education entry removed.");
+    }, (card, item) => {
+      const startId = "edu-" + item.id + "-start", endId = "edu-" + item.id + "-end";
+      const start = el("input", { type: "date", id: startId });
+      start.value = item.start || "";
+      const end = el("input", { type: "date", id: endId });
+      end.value = item.end || "";
+      start.addEventListener("input", () => { item.start = start.value; saveState(); renderResumePreview(); });
+      end.addEventListener("input", () => { item.end = end.value; saveState(); renderResumePreview(); });
+      card.appendChild(el("div", { class: "grid-2" },
+        el("div", { class: "field" }, el("label", { for: startId, text: "Start date" }), start),
+        el("div", { class: "field" }, el("label", { for: endId, text: "End date" }), end)
+      ));
+      const dId = "edu-" + item.id + "-details";
+      const details = el("textarea", { id: dId, placeholder: "Relevant subjects, projects, grades or activities." });
+      details.value = item.details || "";
+      details.addEventListener("input", () => { item.details = details.value; saveState(); renderResumePreview(); });
+      card.appendChild(el("div", { class: "field" }, el("label", { for: dId, text: "Relevant details" }), details));
+    }));
+  });
+}
+
+function renderProjects() {
+  const wrap = $("#projList");
+  if (!wrap) return;
+  wrap.textContent = "";
+  if (!state.resume.projects.length) wrap.appendChild(el("p", { class: "hint", style: "margin-bottom:12px", text: "No projects added yet." }));
+  state.resume.projects.forEach((p, i) => {
+    wrap.appendChild(entryEditor("proj", p, i, [
+      { key: "title", label: "Project title", ph: "Stocktake Automation" },
+      { key: "link", label: "Link (optional)", ph: "github.com/username/project", type: "url" }
+    ], "Project", () => {
+      state.resume.projects.splice(i, 1);
+      saveState(); renderProjects(); renderResumePreview();
+      toast("Project removed.");
+    }, (card, item) => {
+      const id = "proj-" + item.id + "-description";
+      const ta = el("textarea", { id: id, placeholder: "What the project was, what you did and the outcome." });
+      ta.value = item.description || "";
+      ta.addEventListener("input", () => { item.description = ta.value; saveState(); renderResumePreview(); });
+      card.appendChild(el("div", { class: "field" }, el("label", { for: id, text: "Description" }), ta));
+    }));
+  });
+}
+
+function renderCertifications() {
+  const wrap = $("#certList");
+  if (!wrap) return;
+  wrap.textContent = "";
+  if (!state.resume.certifications.length) wrap.appendChild(el("p", { class: "hint", style: "margin-bottom:12px", text: "No certifications added yet." }));
+  state.resume.certifications.forEach((c, i) => {
+    wrap.appendChild(entryEditor("cert", c, i, [
+      { key: "name", label: "Certification name", ph: "Responsible Service of Alcohol" },
+      { key: "org", label: "Issuing organisation", ph: "Queensland Government" },
+      { key: "date", label: "Date", ph: "March 2024" }
+    ], "Certification", () => {
+      state.resume.certifications.splice(i, 1);
+      saveState(); renderCertifications(); renderResumePreview();
+      toast("Certification removed.");
+    }));
+  });
+}
+
+function renderSkills() {
+  const wrap = $("#skillTags");
+  if (!wrap) return;
+  wrap.textContent = "";
+  state.resume.skills.forEach((skill, i) => {
+    wrap.appendChild(el("span", { class: "tag" },
+      document.createTextNode(skill),
+      el("button", {
+        type: "button", text: "×", "aria-label": "Remove skill " + skill,
+        onclick: () => {
+          state.resume.skills.splice(i, 1);
+          saveState(); renderSkills(); renderResumePreview();
+        }
+      })
+    ));
+  });
+}
+
+const OPTIONAL_META = {
+  volunteer: {
+    label: "Volunteer experience",
+    hint: "Unpaid work still shows reliability, teamwork and initiative.",
+    fields: [
+      { key: "role", label: "Role", ph: "Volunteer Kitchen Hand" },
+      { key: "org", label: "Organisation", ph: "Community Meals Brisbane" },
+      { key: "date", label: "Dates", ph: "2023 – 2024" }
+    ],
+    textarea: { key: "description", label: "What you did", ph: "One point per line." }
+  },
+  languages: {
+    label: "Languages",
+    hint: "Useful for customer-facing and multicultural workplaces.",
+    fields: [
+      { key: "name", label: "Language", ph: "Mandarin" },
+      { key: "level", label: "Level", ph: "Fluent" }
+    ]
+  },
+  awards: {
+    label: "Awards",
+    hint: "Awards, scholarships and formal recognition.",
+    fields: [
+      { key: "title", label: "Award", ph: "Employee of the Quarter" },
+      { key: "issuer", label: "Issued by", ph: "Northside Retail Group" },
+      { key: "date", label: "Date", ph: "Q3 2024" }
+    ]
+  },
+  references: {
+    label: "References",
+    hint: "You can write \"Available on request\" or list referees with their permission.",
+    text: true
+  }
+};
+
+function renderOptional() {
+  const toggles = $("#optionalToggles");
+  const lists = $("#optionalLists");
+  if (!toggles || !lists) return;
+  toggles.textContent = "";
+  lists.textContent = "";
+
+  Object.keys(OPTIONAL_META).forEach(key => {
+    const meta = OPTIONAL_META[key];
+    const section = state.resume.optional[key];
+    const box = el("div", { style: "border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px;background:#fcfdff" });
+
+    const cb = el("input", { type: "checkbox" });
+    cb.checked = section.enabled;
+    cb.id = "opt-" + key;
+    cb.addEventListener("change", () => {
+      section.enabled = cb.checked;
+      saveState(); renderResumePreview(); renderOptional();
+    });
+
+    box.appendChild(el("div", { style: "display:flex;align-items:center;justify-content:space-between;gap:12px" },
+      el("label", { for: "opt-" + key, style: "font-weight:700;font-size:.9rem;display:flex;align-items:center;gap:10px" },
+        cb, document.createTextNode(meta.label)
+      ),
+      el("span", { class: "hint", style: "margin:0", text: section.enabled ? "Included" : "Hidden" })
+    ));
+    box.appendChild(el("p", { class: "hint", style: "margin:6px 0 0", text: meta.hint }));
+
+    if (section.enabled) {
+      const inner = el("div", { style: "margin-top:14px;border-top:1px dashed var(--line);padding-top:14px" });
+
+      if (meta.text) {
+        const id = "ref-text";
+        const ta = el("textarea", { id: id, placeholder: "Available on request." });
+        ta.value = section.text || "";
+        ta.addEventListener("input", () => { section.text = ta.value; saveState(); renderResumePreview(); });
+        inner.appendChild(el("div", { class: "field" }, el("label", { for: id, text: "Reference details" }), ta));
+      } else {
+        (section.items || []).forEach((item, idx) => {
+          const card = el("div", { class: "item-card" });
+          card.appendChild(el("div", { class: "item-head" },
+            el("strong", { text: meta.label + " " + (idx + 1) }),
+            el("div", { class: "item-actions" },
+              el("button", {
+                class: "icon-btn danger", type: "button", text: "Remove",
+                onclick: () => { section.items.splice(idx, 1); saveState(); renderOptional(); renderResumePreview(); }
+              })
+            )
+          ));
+          const grid = el("div", { class: "grid-2" });
+          meta.fields.forEach(f => {
+            const fid = key + "-" + item.id + "-" + f.key;
+            const input = el("input", { type: "text", id: fid, placeholder: f.ph || "" });
+            input.value = item[f.key] || "";
+            input.addEventListener("input", () => { item[f.key] = input.value; saveState(); renderResumePreview(); });
+            grid.appendChild(el("div", { class: "field" }, el("label", { for: fid, text: f.label }), input));
+          });
+          card.appendChild(grid);
+
+          if (meta.textarea) {
+            const tid = key + "-" + item.id + "-" + meta.textarea.key;
+            const ta = el("textarea", { id: tid, placeholder: meta.textarea.ph || "" });
+            ta.value = item[meta.textarea.key] || "";
+            ta.addEventListener("input", () => { item[meta.textarea.key] = ta.value; saveState(); renderResumePreview(); });
+            card.appendChild(el("div", { class: "field" }, el("label", { for: tid, text: meta.textarea.label }), ta));
+          }
+          inner.appendChild(card);
+        });
+        inner.appendChild(el("button", {
+          class: "btn btn-outline btn-sm", type: "button", text: "+ Add " + meta.label.toLowerCase(),
+          onclick: () => { section.items.push({ id: uid() }); saveState(); renderOptional(); renderResumePreview(); }
+        }));
+      }
+      box.appendChild(inner);
+    }
+    lists.appendChild(box);
+  });
+}
+
+/* ---------- 5. Resume preview ---------- */
+function hasText(v) { return typeof v === "string" && v.trim().length > 0; }
+
+function optionalHasContent(key) {
+  const s = state.resume.optional[key];
+  if (!s || !s.enabled) return false;
+  if (key === "references") return hasText(s.text);
+  return Array.isArray(s.items) && s.items.some(it => Object.keys(it).some(k => k !== "id" && hasText(it[k])));
+}
+
+function buildResumeDoc() {
+  const r = state.resume;
+  const p = r.personal;
+  const doc = el("div", { class: "doc tpl-" + r.template, id: "resumeDoc" });
+  doc.style.setProperty("--doc-accent", r.accent || "#2563eb");
+
+  const anyContent = hasText(p.fullName) || hasText(p.title) || hasText(p.summary) ||
+    r.experience.length || r.education.length || r.skills.length || r.projects.length || r.certifications.length ||
+    Object.keys(r.optional).some(k => optionalHasContent(k));
+
+  if (!anyContent) {
+    doc.appendChild(el("div", { class: "doc-empty" },
+      el("h3", { text: "Your resume preview will appear here" }),
+      el("p", { text: "Start with your name and professional title on the left, then add your experience. Everything updates live." })
+    ));
+    return doc;
+  }
+
+  const contactBits = [];
+  if (hasText(p.email)) contactBits.push(el("span", { text: p.email }));
+  if (hasText(p.phone)) contactBits.push(el("span", { text: p.phone }));
+  if (hasText(p.location)) contactBits.push(el("span", { text: p.location }));
+  if (hasText(p.linkedin)) contactBits.push(el("span", { text: p.linkedin }));
+  if (hasText(p.portfolio)) contactBits.push(el("span", { text: p.portfolio }));
+
+  const head = el("header", { class: "doc-head" });
+  head.appendChild(el("h1", { text: hasText(p.fullName) ? p.fullName : "Your Name" }));
+  if (hasText(p.title)) head.appendChild(el("div", { class: "doc-role", text: p.title }));
+  if (contactBits.length) head.appendChild(el("div", { class: "doc-contact" }, contactBits));
+  doc.appendChild(head);
+
+  const body = el("div", { class: "doc-body" });
+
+  if (hasText(p.summary)) {
+    body.appendChild(el("section", { class: "doc-sec" },
+      el("h2", { text: "Professional Summary" }),
+      el("p", { text: p.summary })
+    ));
+  }
+
+  if (r.experience.length) {
+    const sec = el("section", { class: "doc-sec" }, el("h2", { text: "Work Experience" }));
+    r.experience.forEach(job => {
+      if (!hasText(job.title) && !hasText(job.company) && !hasText(job.description)) return;
+      const item = el("div", { class: "doc-item" });
+      const head2 = el("div", { class: "doc-item-head" },
+        el("div", {},
+          el("div", { class: "doc-item-title", text: job.title || "Role" }),
+          el("div", { class: "doc-item-sub", text: [job.company, job.location].filter(hasText).join(" · ") })
+        )
+      );
+      const range = dateRange(job.start, job.end, job.current);
+      if (range) head2.appendChild(el("div", { class: "doc-item-meta", text: range }));
+      item.appendChild(head2);
+      const lines = toLines(job.description);
+      if (lines.length) item.appendChild(el("ul", {}, lines.map(l => el("li", { text: l }))));
+      sec.appendChild(item);
+    });
+    if (sec.children.length > 1) body.appendChild(sec);
+  }
+
+  if (r.education.length) {
+    const sec = el("section", { class: "doc-sec" }, el("h2", { text: "Education" }));
+    r.education.forEach(ed => {
+      if (!hasText(ed.qualification) && !hasText(ed.institution)) return;
+      const item = el("div", { class: "doc-item" });
+      const head2 = el("div", { class: "doc-item-head" },
+        el("div", {},
+          el("div", { class: "doc-item-title", text: ed.qualification || "Qualification" }),
+          el("div", { class: "doc-item-sub", text: [ed.institution, ed.location].filter(hasText).join(" · ") })
+        )
+      );
+      const range = dateRange(ed.start, ed.end, false);
+      if (range) head2.appendChild(el("div", { class: "doc-item-meta", text: range }));
+      item.appendChild(head2);
+      const lines = toLines(ed.details);
+      if (lines.length) item.appendChild(el("ul", {}, lines.map(l => el("li", { text: l }))));
+      sec.appendChild(item);
+    });
+    if (sec.children.length > 1) body.appendChild(sec);
+  }
+
+  if (r.skills.length) {
+    body.appendChild(el("section", { class: "doc-sec" },
+      el("h2", { text: "Skills" }),
+      el("div", { class: "doc-skills" }, r.skills.map(s => el("span", { text: s })))
+    ));
+  }
+
+  if (r.projects.length) {
+    const sec = el("section", { class: "doc-sec" }, el("h2", { text: "Projects" }));
+    r.projects.forEach(pr => {
+      if (!hasText(pr.title) && !hasText(pr.description)) return;
+      const item = el("div", { class: "doc-item" });
+      item.appendChild(el("div", { class: "doc-item-head" },
+        el("div", { class: "doc-item-title", text: pr.title || "Project" })
+      ));
+      const lines = toLines(pr.description);
+      if (lines.length) item.appendChild(el("ul", {}, lines.map(l => el("li", { text: l }))));
+      if (hasText(pr.link)) item.appendChild(el("div", { class: "doc-item-meta", text: pr.link }));
+      sec.appendChild(item);
+    });
+    if (sec.children.length > 1) body.appendChild(sec);
+  }
+
+  if (r.certifications.length) {
+    const sec = el("section", { class: "doc-sec" }, el("h2", { text: "Certifications" }));
+    r.certifications.forEach(c => {
+      if (!hasText(c.name)) return;
+      const item = el("div", { class: "doc-item" });
+      const head2 = el("div", { class: "doc-item-head" },
+        el("div", {},
+          el("div", { class: "doc-item-title", text: c.name }),
+          el("div", { class: "doc-item-sub", text: c.org || "" })
+        )
+      );
+      if (hasText(c.date)) head2.appendChild(el("div", { class: "doc-item-meta", text: c.date }));
+      item.appendChild(head2);
+      sec.appendChild(item);
+    });
+    if (sec.children.length > 1) body.appendChild(sec);
+  }
+
+  if (optionalHasContent("volunteer")) {
+    const sec = el("section", { class: "doc-sec" }, el("h2", { text: "Volunteer Experience" }));
+    state.resume.optional.volunteer.items.forEach(v => {
+      if (!hasText(v.role) && !hasText(v.org)) return;
+      const item = el("div", { class: "doc-item" });
+      const head2 = el("div", { class: "doc-item-head" },
+        el("div", {},
+          el("div", { class: "doc-item-title", text: v.role || "Volunteer" }),
+          el("div", { class: "doc-item-sub", text: v.org || "" })
+        )
+      );
+      if (hasText(v.date)) head2.appendChild(el("div", { class: "doc-item-meta", text: v.date }));
+      item.appendChild(head2);
+      const lines = toLines(v.description);
+      if (lines.length) item.appendChild(el("ul", {}, lines.map(l => el("li", { text: l }))));
+      sec.appendChild(item);
+    });
+    if (sec.children.length > 1) body.appendChild(sec);
+  }
+
+  if (optionalHasContent("languages")) {
+    const sec = el("section", { class: "doc-sec" }, el("h2", { text: "Languages" }));
+    const list = el("div", { class: "doc-skills" });
+    state.resume.optional.languages.items.forEach(l => {
+      if (!hasText(l.name)) return;
+      list.appendChild(el("span", { text: l.level ? l.name + " — " + l.level : l.name }));
+    });
+    if (list.children.length) { sec.appendChild(list); body.appendChild(sec); }
+  }
+
+  if (optionalHasContent("awards")) {
+    const sec = el("section", { class: "doc-sec" }, el("h2", { text: "Awards" }));
+    state.resume.optional.awards.items.forEach(a => {
+      if (!hasText(a.title)) return;
+      const item = el("div", { class: "doc-item" });
+      const head2 = el("div", { class: "doc-item-head" },
+        el("div", {},
+          el("div", { class: "doc-item-title", text: a.title }),
+          el("div", { class: "doc-item-sub", text: a.issuer || "" })
+        )
+      );
+      if (hasText(a.date)) head2.appendChild(el("div", { class: "doc-item-meta", text: a.date }));
+      item.appendChild(head2);
+      sec.appendChild(item);
+    });
+    if (sec.children.length > 1) body.appendChild(sec);
+  }
+
+  if (optionalHasContent("references")) {
+    body.appendChild(el("section", { class: "doc-sec" },
+      el("h2", { text: "References" }),
+      el("p", { text: state.resume.optional.references.text })
+    ));
+  }
+
+  doc.appendChild(body);
+  return doc;
+}
+
+function renderResumePreview() {
+  const host = $("#resumePreview");
+  if (!host) return;
+  host.textContent = "";
+  host.appendChild(buildResumeDoc());
+}
+
+/* ---------- 6. Writing assistance ---------- */
+const SUMMARY_EXAMPLES = [
+  { level: "No work experience", text: "Reliable and motivated Year 12 student seeking a first casual role in retail. Strong communicator with experience balancing school commitments, team sport and volunteer work. Quick to learn new systems and comfortable working with customers of all ages." },
+  { level: "Entry level / casual", text: "Friendly customer service worker with 2 years of experience in fast-paced hospitality. Skilled in point-of-sale operation, cash handling and resolving customer complaints calmly. Looking for a part-time role where reliability and teamwork are valued." },
+  { level: "Experienced professional", text: "Customer service team leader with 7 years of experience across retail and contact centre environments. Proven record of improving first-call resolution and coaching new starters. Seeking a team leader role where I can build on strong process and people skills." },
+  { level: "Career change", text: "Career changer moving into administration after 8 years in hospitality. Highly organised, confident with Microsoft Office and experienced in rostering, invoicing and coordinating small teams. Keen to apply strong customer focus in an office environment." },
+  { level: "Trades / apprentice", text: "Third-year electrical apprentice with hands-on experience in domestic and light commercial installations. Committed to safe work practices and reading plans accurately. Looking to complete my qualification with an employer who values quality workmanship." }
+];
+
+const ACTION_VERBS = ["Achieved","Adapted","Analysed","Built","Coached","Collaborated","Communicated","Coordinated","Delivered","Developed","Exceeded","Handled","Improved","Increased","Instructed","Led","Managed","Mentored","Organised","Prioritised","Processed","Reduced","Resolved","Scheduled","Trained","Troubleshot"];
+
+const ACHIEVEMENT_EXAMPLES = [
+  "Resolved an average of 45 customer enquiries per shift while maintaining a 4.8/5 satisfaction rating.",
+  "Reduced stock discrepancies by 30% over six months by introducing a weekly cycle count.",
+  "Trained 6 new team members on POS, opening and closing procedures.",
+  "Handled up to $4,000 in daily takings with zero cash variances across 12 months.",
+  "Reorganised the storeroom layout, cutting average pick time for online orders by 20%.",
+  "Completed a Certificate III while working 25 hours per week, finishing with a distinction average."
+];
+
+const VAGUE_MAP = [
+  { bad: /\bhard[- ]working\b/gi, good: "delivered consistent results under pressure" },
+  { bad: /\bteam player\b/gi, good: "collaborated with a team of X to achieve Y" },
+  { bad: /\bgood communicator\b/gi, good: "communicated with customers and stakeholders daily" },
+  { bad: /\bgo[- ]getter\b/gi, good: "took initiative to improve a specific process" },
+  { bad: /\bpeople person\b/gi, good: "built rapport with a diverse customer base" },
+  { bad: /\bresponsible for\b/gi, good: "managed / led / delivered" },
+  { bad: /\bhelped with\b/gi, good: "supported the team to achieve a specific outcome" },
+  { bad: /\bvarious tasks\b/gi, good: "list the actual tasks" },
+  { bad: /\bduties included\b/gi, good: "start with an action verb and the result" },
+  { bad: /\bexcellent\b/gi, good: "quantify it — how many, how often, by how much" }
+];
+
+function buildChecklist() {
+  const r = state.resume;
+  return [
+    { label: "Full name added", ok: hasText(r.personal.fullName) },
+    { label: "Professional title added", ok: hasText(r.personal.title) },
+    { label: "Email address added", ok: hasText(r.personal.email) },
+    { label: "Phone number added", ok: hasText(r.personal.phone) },
+    { label: "City and country added", ok: hasText(r.personal.location) },
+    { label: "Professional summary written (2–3 sentences)", ok: hasText(r.personal.summary) && r.personal.summary.trim().length > 60 },
+    { label: "At least one work experience entry", ok: r.experience.some(j => hasText(j.title) || hasText(j.company)) },
+    { label: "Experience includes achievement bullet points", ok: r.experience.some(j => toLines(j.description).length >= 2) },
+    { label: "At least one education entry", ok: r.education.some(e => hasText(e.qualification) || hasText(e.institution)) },
+    { label: "Six or more skills listed", ok: r.skills.length >= 6 },
+    { label: "Certifications or licences added (if relevant)", ok: r.certifications.some(c => hasText(c.name)) }
+  ];
+}
+
+function renderWritingHelp() {
+  const host = $("#writingHelp");
+  if (!host) return;
+  host.textContent = "";
+
+  if (!tierAtLeast("bundle")) {
+    host.appendChild(el("div", { class: "help-box lock" },
+      el("strong", { text: "Writing assistance is part of the Career Bundle" }),
+      el("p", { style: "margin:0 0 14px;font-size:.88rem", text: "Unlock professional summary examples for different experience levels, action-verb suggestions, achievement-focused bullet templates, a live resume checklist and a vague-wording checker — for a one-time $19." }),
+      el("button", {
+        class: "btn btn-primary btn-sm", type: "button", text: "Unlock Career Bundle — $19",
+        onclick: () => openCheckout("bundle")
+      })
+    ));
+    return;
+  }
+
+  host.appendChild(el("div", { class: "help-box" },
+    el("strong", { text: "Resume checklist" }),
+    el("p", { style: "margin:0 0 10px;font-size:.84rem", text: "A quick check of what is missing. Nothing is required, but recruiters look for these." })
+  ));
+  const list = el("ul", { class: "checklist" });
+  buildChecklist().forEach(item => {
+    list.appendChild(el("li", { class: item.ok ? "ok" : "todo" },
+      el("span", { class: "mark", text: item.ok ? "✓" : "!" }),
+      el("span", { text: item.label })
+    ));
+  });
+  host.appendChild(list);
+
+  host.appendChild(el("h3", { style: "font-size:.92rem;margin:22px 0 8px", text: "Professional summary examples" }));
+  host.appendChild(el("p", { class: "hint", style: "margin-bottom:10px", text: "These are examples only. Adapt the wording so every claim is true for you, then click to place it in your summary field." }));
+  SUMMARY_EXAMPLES.forEach(ex => {
+    host.appendChild(el("div", { class: "item-card", style: "padding:14px" },
+      el("span", { class: "lbl", text: ex.level }),
+      el("p", { style: "font-size:.87rem;color:var(--slate);margin:0 0 10px", text: ex.text }),
+      el("button", {
+        class: "btn btn-outline btn-sm", type: "button", text: "Use as starting point",
+        onclick: () => {
+          const ta = $("#p-summary");
+          ta.value = ex.text;
+          state.resume.personal.summary = ex.text;
+          saveState(); renderResumePreview();
+          ta.focus();
+          toast("Example placed in your summary — edit it to match your real experience.");
+        }
+      })
+    ));
+  });
+
+  host.appendChild(el("h3", { style: "font-size:.92rem;margin:22px 0 8px", text: "Action verbs" }));
+  host.appendChild(el("p", { class: "hint", style: "margin-bottom:10px", text: "Start each bullet point with one of these instead of \"responsible for\"." }));
+  const chips = el("div", { class: "chip-row" });
+  ACTION_VERBS.forEach(v => {
+    chips.appendChild(el("button", {
+      class: "chip", type: "button", text: v,
+      onclick: () => {
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(v + " ").then(
+            () => toast("\"" + v + "\" copied to your clipboard."),
+            () => toast("Copy not available — select the word manually.")
+          );
+        } else {
+          toast("Copy not available — select the word manually.");
+        }
+      }
+    }));
+  });
+  host.appendChild(chips);
+
+  host.appendChild(el("h3", { style: "font-size:.92rem;margin:22px 0 8px", text: "Achievement-focused bullet examples" }));
+  host.appendChild(el("p", { class: "hint", style: "margin-bottom:10px", text: "Examples only — do not paste these in unless they describe something you actually did." }));
+  const aList = el("ul", { class: "example-list" });
+  ACHIEVEMENT_EXAMPLES.forEach(a => aList.appendChild(el("li", { text: a })));
+  host.appendChild(aList);
+
+  host.appendChild(el("h3", { style: "font-size:.92rem;margin:22px 0 8px", text: "Vague wording checker" }));
+  const vague = el("div", { id: "vagueReport" });
+  host.appendChild(vague);
+
+  host.appendChild(el("h3", { style: "font-size:.92rem;margin:22px 0 8px", text: "No work experience yet?" }));
+  host.appendChild(el("div", { class: "help-box" },
+    el("strong", { text: "You still have plenty to include" }),
+    el("ul", { style: "list-style:disc;padding-left:18px;font-size:.87rem;margin:0" },
+      el("li", { text: "Volunteer work, community sport or fundraising." }),
+      el("li", { text: "School or TAFE projects, group assignments and presentations." }),
+      el("li", { text: "Babysitting, tutoring, lawn mowing or informal paid work." }),
+      el("li", { text: "Certificates, licences and short courses." }),
+      el("li", { text: "Reliability: attendance, punctuality, balancing study and commitments." })
+    )
+  ));
+
+  updateVagueReport();
+}
+
+function updateVagueReport() {
+  const host = $("#vagueReport");
+  if (!host) return;
+  host.textContent = "";
+
+  const sources = [];
+  if (hasText(state.resume.personal.summary)) sources.push({ where: "Professional summary", text: state.resume.personal.summary });
+  state.resume.experience.forEach((j, i) => {
+    if (hasText(j.description)) sources.push({ where: "Experience " + (i + 1) + " (" + (j.title || "untitled") + ")", text: j.description });
+  });
+
+  const findings = [];
+  sources.forEach(src => {
+    VAGUE_MAP.forEach(rule => {
+      const matches = src.text.match(rule.bad);
+      if (matches) findings.push({ where: src.where, phrase: matches[0], suggestion: rule.good });
+    });
+  });
+
+  if (!sources.length) {
+    host.appendChild(el("p", { class: "hint", style: "margin:0", text: "Add a summary or experience description and any vague wording will be flagged here." }));
+    return;
+  }
+  if (!findings.length) {
+    host.appendChild(el("p", { class: "hint", style: "margin:0;color:var(--ok)", text: "No vague phrases detected in your summary or experience. Nice work." }));
+    return;
+  }
+  const list = el("ul", { class: "example-list" });
+  findings.forEach(f => {
+    list.appendChild(el("li", {},
+      el("strong", { text: "\"" + f.phrase + "\"" }),
+      document.createTextNode(" in " + f.where + " — consider replacing with: "),
+      el("em", { text: f.suggestion })
+    ));
+  });
+  host.appendChild(list);
+  host.appendChild(el("p", { class: "hint", style: "margin-top:8px", text: "Suggestions are generic guidance, not automatic edits." }));
+}
+
+/* ---------- 7. Cover letter ---------- */
+function buildLetter() {
+  const c = state.cover;
+  const r = state.resume.personal;
+  const name = c.name || r.fullName || "";
+  const company = c.company || c.employer || "";
+  const jobTitle = c.jobTitle || "";
+
+  const custom = hasText(c.body);
+  const wrap = el("div", { class: "letter" });
+  if (!custom) {
+    const empty = hasText(name) || hasText(company) || hasText(jobTitle);
+    wrap.classList.add("empty");
+    wrap.textContent = empty
+      ? "Click \"Generate Cover Letter\" to build a draft from the details you have entered. You can edit the result afterwards."
+      : "Your cover letter preview will appear here. Fill in your details on the left, then click Generate Cover Letter.";
+    return wrap;
+  }
+  wrap.textContent = c.body;
+  return wrap;
+}
+
+function renderLetter() {
+  const host = $("#letterPreview");
+  if (!host) return;
+  host.textContent = "";
+  host.appendChild(buildLetter());
+  const ta = $("#letterText");
+  if (ta && ta.value !== state.cover.body) ta.value = state.cover.body || "";
+}
+
+function generateCoverLetter() {
+  if (!requireTier("pro", "the Cover Letter Builder")) return;
+  const c = state.cover;
+  const r = state.resume.personal;
+  const name = c.name || r.fullName || "";
+  const email = c.email || r.email || "";
+  const phone = c.phone || r.phone || "";
+  const location = c.location || r.location || "";
+  const company = c.company || c.employer || "";
+  const jobTitle = c.jobTitle || "";
+  const manager = c.manager || "";
+
+  const today = new Date().toLocaleDateString("en-AU", { day: "numeric", month: "long", year: "numeric" });
+  const lines = [];
+
+  if (hasText(name)) lines.push(name);
+  const contactLine = [email, phone, location].filter(hasText).join("  |  ");
+  if (contactLine) lines.push(contactLine);
+  lines.push("");
+  lines.push(today);
+  lines.push("");
+  if (hasText(manager)) lines.push(manager);
+  if (hasText(company)) lines.push(company);
+  if (hasText(manager) || hasText(company)) lines.push("");
+  lines.push(hasText(manager) ? "Dear " + manager + "," : "Dear Hiring Manager,");
+  lines.push("");
+
+  const roleText = hasText(jobTitle) ? jobTitle : "the advertised position";
+  const whereText = hasText(company) ? " at " + company : "";
+  const openers = [
+    "I am writing to apply for " + roleText + whereText + ".",
+    "I would like to apply for " + roleText + whereText + ".",
+    "I am submitting my application for " + roleText + whereText + "."
+  ];
+  let opening = openers[Math.floor(Math.random() * openers.length)];
+
+  const adText = String(c.ad || "").trim();
+  if (hasText(adText)) {
+    const words = adText.replace(/\s+/g, " ").split(" ").slice(0, 14).join(" ");
+    opening += " Your advertisement highlights " + words.replace(/[.,;:]+$/, "").toLowerCase() + ", which matches what I am looking for in my next role.";
+  } else if (hasText(company)) {
+    opening += " I am interested in the opportunity to contribute to " + company + ".";
+  }
+  lines.push(opening);
+  lines.push("");
+
+  const expText = String(c.experience || "").trim();
+  if (hasText(expText)) {
+    const sentences = expText.split(/(?<=[.!?])\s+/).map(s => s.trim()).filter(Boolean);
+    const first = sentences.shift() || expText;
+    lines.push(first.replace(/[.!?]*$/, "") + ".");
+    if (sentences.length) lines.push("In that role, " + sentences.join(" ").replace(/^[A-Z]/, ch => ch.toLowerCase()));
+  } else {
+    const fromResume = state.resume.experience
+      .filter(j => hasText(j.title) || hasText(j.company))
+      .slice(0, 1)
+      .map(j => (j.title || "a previous role") + (hasText(j.company) ? " at " + j.company : ""))[0];
+    lines.push(fromResume
+      ? "My background includes " + fromResume + ", which has given me practical experience I can bring to this position."
+      : "I am keen to bring my experience, reliability and willingness to learn to this position.");
+  }
+  lines.push("");
+
+  const skillsRaw = String(c.skills || "").trim();
+  let skillList = skillsRaw ? skillsRaw.split(/[,;\n]/).map(s => s.trim()).filter(Boolean) : [];
+  if (!skillList.length && state.resume.skills.length) skillList = state.resume.skills.slice(0, 6);
+  if (skillList.length) {
+    lines.push("The skills I would bring to this role include " + joinNice(skillList.slice(0, 6)) + ". I apply these consistently and am comfortable learning new systems quickly.");
+    lines.push("");
+  }
+
+  const why = String(c.why || "").trim();
+  if (hasText(why)) {
+    lines.push(why.replace(/[.!?]*$/, "") + ".");
+    lines.push("");
+  } else if (hasText(company)) {
+    lines.push("I am particularly interested in working with " + company + " because the role aligns with the direction I want to take my career.");
+    lines.push("");
+  }
+
+  const notes = String(c.notes || "").trim();
+  if (hasText(notes)) {
+    lines.push(notes.replace(/[.!?]*$/, "") + ".");
+    lines.push("");
+  }
+
+  const closers = [
+    "Thank you for considering my application. I would welcome the opportunity to discuss how I can contribute to your team.",
+    "I appreciate you taking the time to review my application and would be glad to discuss the role further.",
+    "Thank you for your time and consideration. I look forward to the opportunity to speak with you."
+  ];
+  lines.push(closers[Math.floor(Math.random() * closers.length)]);
+  lines.push("");
+  lines.push("Kind regards,");
+  lines.push(hasText(name) ? name : "[Your name]");
+
+  const letter = lines.join("\n").replace(/\n{3,}/g, "\n\n").trim();
+  state.cover.body = letter;
+  saveState();
+  renderLetter();
+  toast("Draft cover letter generated. Edit it to make it sound like you.");
+}
+
+/* ---------- 8. Export / print / backup ---------- */
+function printNode(node, filename) {
+  const area = $("#printArea");
+  area.textContent = "";
+  area.appendChild(node.cloneNode(true));
+  const prevTitle = document.title;
+  if (filename) document.title = filename;
+  window.print();
+  setTimeout(() => { document.title = prevTitle; area.textContent = ""; }, 800);
+}
+
+function loadHtml2Pdf() {
+  return new Promise(resolve => {
+    if (window.html2pdf) return resolve(true);
+    const urls = [
+      "https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js",
+      "https://unpkg.com/html2pdf.js@0.10.1/dist/html2pdf.bundle.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+    ];
+    let i = 0, settled = false;
+    const finish = ok => { if (settled) return; settled = true; resolve(ok); };
+    const next = () => {
+      if (i >= urls.length) return finish(false);
+      const s = document.createElement("script");
+      s.src = urls[i++];
+      s.onload = () => setTimeout(() => finish(!!window.html2pdf), 60);
+      s.onerror = next;
+      document.head.appendChild(s);
+      setTimeout(() => { if (!settled && !window.html2pdf) next(); }, 6000);
+    };
+    next();
+  });
+}
+
+async function exportPdf(node, filename) {
+  const ok = await loadHtml2Pdf();
+  if (!ok || !window.html2pdf) {
+    toast("PDF library could not be loaded — opening print dialog. Choose \"Save as PDF\" as the destination.");
+    printNode(node, filename);
+    return;
+  }
+
+  toast("Preparing your PDF…");
+
+  node.style.boxShadow = "none";
+  node.style.borderRadius = "0";
+  node.style.margin = "0";
+  node.style.width = "794px";
+  node.style.maxWidth = "794px";
+  node.style.background = "#ffffff";
+
+  const stage = document.createElement("div");
+  stage.setAttribute("aria-hidden", "true");
+  stage.style.cssText =
+    "position:fixed;left:0;top:9999px;width:794px;background:#ffffff;" +
+    "pointer-events:none;z-index:-1;";
+  stage.appendChild(node);
+  document.body.appendChild(stage);
+
+  await nextFrame();
+
+  try {
+    await window.html2pdf().set({
+      margin: [8, 8, 10, 8],
+      filename: filename + ".pdf",
+      image: { type: "jpeg", quality: 0.92 },
+      html2canvas: {
+        scale: 1.5,
+        useCORS: true,
+        backgroundColor: "#ffffff",
+        logging: false
+      },
+      jsPDF: { unit: "mm", format: "a4", orientation: "portrait" }
+    }).from(node).save();
+    toast("PDF downloaded.");
+  } catch (err) {
+    console.warn("html2pdf generation failed:", err);
+    toast("Direct PDF export failed — opening print dialog. Choose \"Save as PDF\" as the destination.");
+    printNode(buildResumeDoc(), filename);
+  } finally {
+    if (stage.parentNode) stage.parentNode.removeChild(stage);
+  }
+}
+
+function exportBackup() {
+  if (!requireTier("bundle", "JSON backup and restore")) return;
+  const payload = JSON.stringify({ app: "ResumeCraft", version: 1, exportedAt: new Date().toISOString(), data: { resume: state.resume, cover: state.cover } }, null, 2);
+  const name = safeFilename(state.resume.personal.fullName || "resumecraft") + "-backup.json";
+  download(name, payload, "application/json");
+  toast("Backup file downloaded.");
+}
+
+function importBackup() {
+  if (!requireTier("bundle", "JSON backup and restore")) return;
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".json,application/json";
+  input.addEventListener("change", () => {
+    const file = input.files && input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(String(reader.result));
+        const incoming = parsed && parsed.data ? parsed.data : parsed;
+        if (!incoming || typeof incoming !== "object" || (!incoming.resume && !incoming.cover)) {
+          throw new Error("Unrecognised backup structure");
+        }
+        const hydrated = hydrate(incoming);
+        state.resume = hydrated.resume;
+        state.cover = hydrated.cover;
+        saveState();
+        refreshAllEditors();
+        toast("Backup restored.");
+      } catch (err) {
+        console.warn("Import failed.", err);
+        toast("That file could not be read as a ResumeCraft backup.");
+      }
+    };
+    reader.onerror = () => toast("The file could not be opened.");
+    reader.readAsText(file);
+  });
+  input.click();
+}
+
+function confirmDialog(title, message, confirmLabel, onConfirm) {
+  const backdrop = el("div", { class: "modal-backdrop", role: "dialog", "aria-modal": "true", "aria-label": title });
+  const close = () => { document.removeEventListener("keydown", onKey); backdrop.remove(); };
+  const onKey = e => { if (e.key === "Escape") close(); };
+  const box = el("div", { class: "modal" },
+    el("h2", { text: title }),
+    el("p", { text: message }),
+    el("div", { class: "modal-actions" },
+      el("button", { class: "btn btn-ghost", type: "button", text: "Cancel", onclick: close }),
+      el("button", { class: "btn btn-primary", type: "button", text: confirmLabel, onclick: () => { close(); onConfirm(); } })
+    )
+  );
+  backdrop.appendChild(box);
+  backdrop.addEventListener("click", e => { if (e.target === backdrop) close(); });
+  document.addEventListener("keydown", onKey);
+  document.body.appendChild(backdrop);
+  const first = box.querySelector(".btn-primary");
+  if (first) first.focus();
+}
+
+function infoDialog(title, message) {
+  const backdrop = el("div", { class: "modal-backdrop", role: "dialog", "aria-modal": "true", "aria-label": title });
+  const close = () => { document.removeEventListener("keydown", onKey); backdrop.remove(); };
+  const onKey = e => { if (e.key === "Escape") close(); };
+  const box = el("div", { class: "modal" },
+    el("h2", { text: title }),
+    el("p", { text: message }),
+    el("div", { class: "modal-actions" },
+      el("button", { class: "btn btn-primary", type: "button", text: "Got it", onclick: close })
+    )
+  );
+  backdrop.appendChild(box);
+  backdrop.addEventListener("click", e => { if (e.target === backdrop) close(); });
+  document.addEventListener("keydown", onKey);
+  document.body.appendChild(backdrop);
+  box.querySelector(".btn-primary").focus();
+}
+
+/* ---------- Tier UI: upgrade dialogs, checkout, restore ---------- */
+function showUpgradeDialog(tier, featureName) {
+  const isPro = tier === "pro";
+  const price = isPro ? "$9" : "$19";
+  const planName = isPro ? "Professional" : "Career Bundle";
+  const backdrop = el("div", { class: "modal-backdrop", role: "dialog", "aria-modal": "true", "aria-label": "Upgrade required" });
+  const close = () => { document.removeEventListener("keydown", onKey); backdrop.remove(); };
+  const onKey = e => { if (e.key === "Escape") close(); };
+  const box = el("div", { class: "modal" },
+    el("h2", { text: "Unlock " + featureName }),
+    el("p", { text: featureName + " is part of the " + planName + " plan — a one-time " + price + " payment with no subscription." }),
+    el("div", { class: "modal-actions" },
+      el("button", { class: "btn btn-ghost", type: "button", text: "Not now", onclick: close }),
+      el("button", {
+        class: "btn btn-outline", type: "button", text: "Restore purchase",
+        onclick: () => { close(); showRestoreDialog(); }
+      }),
+      el("button", {
+        class: "btn btn-primary", type: "button", text: "Upgrade for " + price,
+        onclick: () => { close(); openCheckout(tier); }
+      })
+    )
+  );
+  backdrop.appendChild(box);
+  backdrop.addEventListener("click", e => { if (e.target === backdrop) close(); });
+  document.addEventListener("keydown", onKey);
+  document.body.appendChild(backdrop);
+  const first = box.querySelector(".btn-primary");
+  if (first) first.focus();
+}
+
+function openCheckout(tier) {
+  const url = tier === "bundle" ? STRIPE_LINKS.bundle : STRIPE_LINKS.pro;
+  const price = tier === "bundle" ? "$19" : "$9";
+  const planName = tier === "bundle" ? "Career Bundle" : "Professional";
+  try {
+    window.open(url, "_blank", "noopener");
+  } catch (err) {
+    window.location.href = url;
+  }
+  setTimeout(() => showPostPaymentDialog(tier, planName, price), 400);
+}
+
+function showPostPaymentDialog(tier, planName, price) {
+  const backdrop = el("div", { class: "modal-backdrop", role: "dialog", "aria-modal": "true", "aria-label": "Payment in progress" });
+  const close = () => { document.removeEventListener("keydown", onKey); backdrop.remove(); };
+  const onKey = e => { if (e.key === "Escape") close(); };
+  const box = el("div", { class: "modal" },
+    el("h2", { text: "Complete your payment" }),
+    el("p", { text: "We've opened Stripe's secure checkout in a new tab for the " + planName + " plan (" + price + " one-time). Complete the payment there." }),
+    el("p", { text: "Once you've paid, Stripe will send you straight back here and unlock your features automatically. If it doesn't, click the link in your Stripe receipt email — that link contains everything needed." }),
+    el("div", { class: "modal-actions" },
+      el("button", { class: "btn btn-ghost", type: "button", text: "I'll do this later", onclick: close }),
+      el("button", {
+        class: "btn btn-primary", type: "button", text: "Restore manually",
+        onclick: () => { close(); showRestoreDialog(); }
+      })
+    )
+  );
+  backdrop.appendChild(box);
+  backdrop.addEventListener("click", e => { if (e.target === backdrop) close(); });
+  document.addEventListener("keydown", onKey);
+  document.body.appendChild(backdrop);
+  const first = box.querySelector(".btn-primary");
+  if (first) first.focus();
+}
+
+function showRestoreDialog() {
+  const backdrop = el("div", { class: "modal-backdrop", role: "dialog", "aria-modal": "true", "aria-label": "Restore purchase" });
+  const close = () => { document.removeEventListener("keydown", onKey); backdrop.remove(); };
+  const onKey = e => { if (e.key === "Escape") close(); };
+
+  const input = el("textarea", {
+    placeholder: "Paste the link from your Stripe receipt email here…",
+    rows: "3",
+    style: "font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.82rem;resize:vertical"
+  });
+  const select = el("select", {});
+  const optPro = el("option", { value: "pro", text: "Professional — $9" });
+  const optBundle = el("option", { value: "bundle", text: "Career Bundle — $19" });
+  select.appendChild(optPro);
+  select.appendChild(optBundle);
+
+  const err = el("p", { class: "hint", style: "color:#b91c1c;margin:8px 0 0;display:none", text: "That link didn't contain a valid purchase reference. Try copying the full link from your receipt email, or the entire URL from your browser's address bar after payment." });
+
+  const submit = () => {
+    const sid = extractSessionId(input.value);
+    if (!sid) { err.style.display = "block"; input.focus(); return; }
+    const tier = select.value === "bundle" ? "bundle" : "pro";
+    storeSession(tier, sid);
+    setTier(tier);
+    close();
+    const label = tier === "bundle" ? "Career Bundle" : "Professional";
+    toast("Restored " + label + " — all features are now active on this browser.");
+  };
+  input.addEventListener("keydown", e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) submit(); });
+
+  const box = el("div", { class: "modal" },
+    el("h2", { text: "Restore your purchase" }),
+    el("p", { text: "If you've already paid but your features aren't unlocked (for example, on a new device), paste the payment link below. You'll find it in the Stripe receipt email sent to you after payment — look for a link starting with buy.stripe.com, or the URL your browser was on immediately after checkout." }),
+    el("div", { class: "field", style: "margin-bottom:12px" },
+      el("label", { text: "Which plan did you buy?" }),
+      select
+    ),
+    el("div", { class: "field", style: "margin-bottom:0" },
+      el("label", { text: "Payment link from your receipt email" }),
+      input
+    ),
+    err,
+    el("div", { class: "modal-actions" },
+      el("button", { class: "btn btn-ghost", type: "button", text: "Cancel", onclick: close }),
+      el("button", { class: "btn btn-primary", type: "button", text: "Restore access", onclick: submit })
+    )
+  );
+  backdrop.appendChild(box);
+  backdrop.addEventListener("click", e => { if (e.target === backdrop) close(); });
+  document.addEventListener("keydown", onKey);
+  document.body.appendChild(backdrop);
+  input.focus();
+}
+
+function showManagePlanDialog() {
+  const tier = state.tier;
+  const label = tier === "bundle" ? "Career Bundle" : tier === "pro" ? "Professional" : "Free";
+  const backdrop = el("div", { class: "modal-backdrop", role: "dialog", "aria-modal": "true", "aria-label": "Manage your plan" });
+  const close = () => { document.removeEventListener("keydown", onKey); backdrop.remove(); };
+  const onKey = e => { if (e.key === "Escape") close(); };
+
+  const actions = [el("button", { class: "btn btn-ghost", type: "button", text: "Close", onclick: close })];
+
+  if (tier === "free") {
+    actions.push(el("button", {
+      class: "btn btn-outline", type: "button", text: "Restore purchase",
+      onclick: () => { close(); showRestoreDialog(); }
+    }));
+    actions.push(el("button", {
+      class: "btn btn-primary", type: "button", text: "Upgrade to Professional — $9",
+      onclick: () => { close(); openCheckout("pro"); }
+    }));
+  } else if (tier === "pro") {
+    actions.push(el("button", {
+      class: "btn btn-primary", type: "button", text: "Upgrade to Career Bundle — $19",
+      onclick: () => { close(); openCheckout("bundle"); }
+    }));
+  }
+
+  const box = el("div", { class: "modal" },
+    el("h2", { text: "Your plan: " + label }),
+    el("p", { text: tier === "free"
+      ? "You're on the free plan. Upgrade to unlock all templates, PDF export, the cover letter builder and accent colours."
+      : tier === "pro"
+        ? "You have full access to all templates, PDF export, the cover letter builder and accent colours. Upgrade to Career Bundle to add writing assistance and JSON backup."
+        : "You have everything unlocked — all templates, PDF export, cover letter builder, accent colours, writing assistance and JSON backup." }),
+    el("div", { class: "modal-actions" }, actions)
+  );
+  backdrop.appendChild(box);
+  backdrop.addEventListener("click", e => { if (e.target === backdrop) close(); });
+  document.addEventListener("keydown", onKey);
+  document.body.appendChild(backdrop);
+}
+
+function updateTierUI() {
+  const label = state.tier === "bundle" ? "Career Bundle" : state.tier === "pro" ? "Professional" : "Free";
+  const badgeClass = "tier-badge" + (state.tier === "free" ? "" : " " + state.tier);
+  ["#tierBadge", "#tierBadgeCover"].forEach(sel => {
+    const b = $(sel);
+    if (b) { b.textContent = label; b.className = badgeClass; }
+  });
+  const pdfBtn = $("#btnPdf");
+  if (pdfBtn) pdfBtn.classList.toggle("is-locked", !tierAtLeast("pro"));
+  const clPdfBtn = $("#clPdf");
+  if (clPdfBtn) clPdfBtn.classList.toggle("is-locked", !tierAtLeast("pro"));
+  const backupBtn = $("#btnBackup");
+  if (backupBtn) backupBtn.classList.toggle("is-locked", !tierAtLeast("bundle"));
+  $$('.tab[data-view="cover"]').forEach(t => t.classList.toggle("is-locked", !tierAtLeast("pro")));
+  const cp = $("#accentCustom");
+  if (cp) {
+    cp.disabled = !tierAtLeast("pro");
+    cp.style.opacity = tierAtLeast("pro") ? "1" : ".4";
+    cp.style.cursor = tierAtLeast("pro") ? "pointer" : "not-allowed";
+  }
+  renderSwatches();
+  renderTemplateGallery();
+  renderWritingHelp();
+}
+
+/* ---------- URL unlock (from Stripe redirect) ----------
+   Stripe redirects to: index.html?session_id=cs_live_xxx&plan=pro
+   We read both, validate the session format, store it, and unlock. */
+function checkUrlUnlock() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const sessionRaw = params.get("session_id") || params.get("session") || "";
+    const plan = (params.get("plan") || params.get("tier") || "").toLowerCase();
+    const sessionId = extractSessionId(sessionRaw) || (isValidSessionFormat(sessionRaw) ? sessionRaw : "");
+
+    if (sessionId && (plan === "pro" || plan === "bundle")) {
+      storeSession(plan, sessionId);
+      setTier(plan);
+      const nice = plan === "bundle" ? "Career Bundle" : "Professional";
+      setTimeout(() => toast("Payment confirmed. " + nice + " is now active on this browser — thank you!"), 700);
+      const url = new URL(window.location.href);
+      ["session_id", "session", "plan", "tier", "unlock"].forEach(k => url.searchParams.delete(k));
+      window.history.replaceState({}, "", url.pathname + (url.search ? "?" + url.searchParams.toString() : "") + (url.hash || ""));
+      return;
+    }
+
+    /* Legacy/simple ?unlock=pro shortcut for testing. Still requires no
+       session, so it will be forgotten if the user clears site data. */
+    const unlock = (params.get("unlock") || "").toLowerCase();
+    if (unlock === "pro" || unlock === "bundle") {
+      if (hasStoredSession(unlock)) {
+        setTier(unlock);
+      } else {
+        toast("To unlock " + unlock + ", please complete payment first.");
+      }
+      const url = new URL(window.location.href);
+      url.searchParams.delete("unlock");
+      window.history.replaceState({}, "", url.pathname + (url.search ? "?" + url.searchParams.toString() : "") + (url.hash || ""));
+    }
+  } catch (err) { /* ignore */ }
+}
+
+/* ---------- Refresh helpers ---------- */
+function fillPersonalFields() {
+  $$("[data-personal]").forEach(input => {
+    input.value = state.resume.personal[input.dataset.personal] || "";
+  });
+}
+
+function fillCoverFields() {
+  $$("[data-cover]").forEach(input => {
+    input.value = state.cover[input.dataset.cover] || "";
+  });
+}
+
+function refreshAllEditors() {
+  fillPersonalFields();
+  fillCoverFields();
+  renderExperience();
+  renderEducation();
+  renderProjects();
+  renderCertifications();
+  renderSkills();
+  renderOptional();
+  renderSwatches();
+  syncTemplateControls();
+  renderResumePreview();
+  renderLetter();
+  renderWritingHelp();
+  renderTemplateGallery();
+  updateTierUI();
+}
+
+/* ---------- 9. Init & event wiring ---------- */
+function init() {
+  loadState();
+  checkUrlUnlock();
+  $("#year").textContent = new Date().getFullYear();
+
+  $("#navToggle").addEventListener("click", () => {
+    const open = $("#navLinks").classList.toggle("open");
+    $("#navToggle").setAttribute("aria-expanded", String(open));
+  });
+
+  $$("[data-nav]").forEach(link => {
+    link.addEventListener("click", e => {
+      const openView = link.dataset.open;
+      closeMobileNav();
+      if (openView) { e.preventDefault(); showApp(openView); return; }
+      if (!$("#landingView").hidden) return;
+      e.preventDefault();
+      showLanding();
+      const target = document.querySelector(link.getAttribute("href"));
+      if (target) setTimeout(() => target.scrollIntoView({ behavior: "smooth" }), 40);
+    });
+  });
+
+  $$("[data-privacy]").forEach(l => l.addEventListener("click", e => {
+    e.preventDefault();
+    infoDialog("Privacy statement",
+      "ResumeCraft stores everything you type in your own browser using localStorage. Nothing is uploaded, transmitted or collected. " +
+      "If you use the PDF export button, a PDF library is fetched from a public CDN the first time; that request does not include your resume content. " +
+      "When you complete a purchase, Stripe handles your payment details on their own secure servers — ResumeCraft never sees your card information. " +
+      "Your purchase is remembered in this browser via your Stripe session reference. Clearing site data will forget the unlock.");
+  }));
+  $$("[data-terms]").forEach(l => l.addEventListener("click", e => {
+    e.preventDefault();
+    infoDialog("Terms of use",
+      "This is a demo build of ResumeCraft. Purchases are processed by Stripe (a third-party payment provider) and are subject to their terms. " +
+      "You are responsible for the accuracy of the content you enter and for reviewing any generated cover letter before sending it. " +
+      "Keep the receipt email from Stripe — it contains the link used to unlock your features on a new device.");
+  }));
+
+  $$("[data-open]").forEach(btn => {
+    if (btn.tagName === "A") return;
+    btn.addEventListener("click", () => { closeMobileNav(); showApp(btn.dataset.open); });
+  });
+
+  $$("[data-goto=home]").forEach(btn => btn.addEventListener("click", showLanding));
+  $$(".tab").forEach(tab => tab.addEventListener("click", () => showApp(tab.dataset.view)));
+
+  $$("[data-acc] .acc-head").forEach(head => {
+    head.addEventListener("click", () => head.parentElement.classList.toggle("open"));
+  });
+
+  $$("[data-personal]").forEach(input => {
+    input.addEventListener("input", () => {
+      state.resume.personal[input.dataset.personal] = input.value;
+      saveState();
+      renderResumePreview();
+      updateVagueReport();
+    });
+  });
+
+  $$("[data-cover]").forEach(input => {
+    input.addEventListener("input", () => {
+      state.cover[input.dataset.cover] = input.value;
+      saveState();
+      if (input.dataset.cover === "body") renderLetter();
+    });
+  });
+
+  $("#addExp").addEventListener("click", () => {
+    state.resume.experience.push({ id: uid(), title: "", company: "", location: "", start: "", end: "", current: false, description: "" });
+    saveState(); renderExperience(); renderResumePreview();
+  });
+  $("#addEdu").addEventListener("click", () => {
+    state.resume.education.push({ id: uid(), qualification: "", institution: "", location: "", start: "", end: "", details: "" });
+    saveState(); renderEducation(); renderResumePreview();
+  });
+  $("#addProj").addEventListener("click", () => {
+    state.resume.projects.push({ id: uid(), title: "", description: "", link: "" });
+    saveState(); renderProjects(); renderResumePreview();
+  });
+  $("#addCert").addEventListener("click", () => {
+    state.resume.certifications.push({ id: uid(), name: "", org: "", date: "" });
+    saveState(); renderCertifications(); renderResumePreview();
+  });
+
+  function addSkill() {
+    const input = $("#skillInput");
+    const value = input.value.trim();
+    if (!value) { input.focus(); return; }
+    if (state.resume.skills.some(s => s.toLowerCase() === value.toLowerCase())) {
+      toast("That skill is already on your list.");
+      input.value = "";
+      return;
+    }
+    state.resume.skills.push(value);
+    input.value = "";
+    saveState(); renderSkills(); renderResumePreview(); renderWritingHelp();
+    input.focus();
+  }
+  $("#addSkill").addEventListener("click", addSkill);
+  $("#skillInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") { e.preventDefault(); addSkill(); }
+  });
+
+  $("#templateSelect").addEventListener("change", e => {
+    const tpl = e.target.value;
+    if (!FREE_TEMPLATES.includes(tpl) && !tierAtLeast("pro")) {
+      const tplMeta = TEMPLATES.find(t => t.id === tpl);
+      e.target.value = state.resume.template;
+      showUpgradeDialog("pro", "the " + (tplMeta ? tplMeta.name : "premium") + " template");
+      return;
+    }
+    state.resume.template = tpl;
+    saveState(); renderResumePreview(); renderTemplateGallery();
+  });
+
+  $("#accentCustom").addEventListener("input", e => {
+    if (!requireTier("pro", "custom accent colours")) {
+      e.target.value = state.resume.accent;
+      return;
+    }
+    state.resume.accent = e.target.value;
+    saveState(); renderResumePreview(); renderSwatches(); syncTemplateControls();
+  });
+
+  function wireMode(btnEdit, btnPreview, workspaceId) {
+    const ws = $("#" + workspaceId);
+    btnEdit.addEventListener("click", () => { ws.classList.remove("mode-preview"); ws.classList.add("mode-edit"); });
+    btnPreview.addEventListener("click", () => { ws.classList.remove("mode-edit"); ws.classList.add("mode-preview"); });
+  }
+  wireMode($("#modeEdit"), $("#modePreview"), "resumeWorkspace");
+  wireMode($("#clModeEdit"), $("#clModePreview"), "coverWorkspace");
+
+  $("#btnPrint").addEventListener("click", () => {
+    printNode(buildResumeDoc(), safeFilename(state.resume.personal.fullName || "resume"));
+  });
+  $("#btnPdf").addEventListener("click", () => {
+    if (!requireTier("pro", "one-click PDF download")) return;
+    exportPdf(buildResumeDoc(), safeFilename(state.resume.personal.fullName || "resume") + "-resume");
+  });
+
+  $("#btnNew").addEventListener("click", () => {
+    confirmDialog("Start a new resume?",
+      "This clears your current resume and cover letter from this browser. Download a backup first if you want to keep a copy.",
+      "Start new resume",
+      () => {
+        state.resume = blankResume();
+        state.cover = blankCover();
+        saveState();
+        refreshAllEditors();
+        toast("New blank resume started.");
+      });
+  });
+
+  $("#btnBackup").addEventListener("click", () => {
+    if (!requireTier("bundle", "JSON backup and restore")) return;
+    const backdrop = el("div", { class: "modal-backdrop", role: "dialog", "aria-modal": "true", "aria-label": "Backup and restore" });
+    const close = () => backdrop.remove();
+    const box = el("div", { class: "modal" },
+      el("h2", { text: "Backup and restore" }),
+      el("p", { text: "Your work is saved automatically in this browser. Export a JSON file to move it to another device or keep a permanent copy." }),
+      el("div", { class: "modal-actions" },
+        el("button", { class: "btn btn-ghost", type: "button", text: "Cancel", onclick: close }),
+        el("button", { class: "btn btn-outline", type: "button", text: "Import backup", onclick: () => { close(); importBackup(); } }),
+        el("button", { class: "btn btn-primary", type: "button", text: "Export backup", onclick: () => { close(); exportBackup(); } })
+      ),
+      el("p", { class: "hint", style: "margin-top:16px", text: "Resumes contain personal information. Backups are saved straight to your device and are never uploaded." })
+    );
+    backdrop.appendChild(box);
+    backdrop.addEventListener("click", e => { if (e.target === backdrop) close(); });
+    document.body.appendChild(backdrop);
+    box.querySelector(".btn-primary").focus();
+  });
+
+  $("#btnGenerate").addEventListener("click", generateCoverLetter);
+
+  $("#btnPullResume").addEventListener("click", () => {
+    if (!requireTier("pro", "the Cover Letter Builder")) return;
+    const p = state.resume.personal;
+    if (!hasText(p.fullName) && !hasText(p.email) && !state.resume.skills.length) {
+      toast("Add some details to your resume first.");
+      return;
+    }
+    state.cover.name = state.cover.name || p.fullName || "";
+    state.cover.email = state.cover.email || p.email || "";
+    state.cover.phone = state.cover.phone || p.phone || "";
+    state.cover.location = state.cover.location || p.location || "";
+    if (!hasText(state.cover.skills) && state.resume.skills.length) {
+      state.cover.skills = state.resume.skills.slice(0, 8).join(", ");
+    }
+    if (!hasText(state.cover.experience) && state.resume.experience.length) {
+      const job = state.resume.experience[0];
+      const bits = [];
+      if (hasText(job.title)) bits.push(job.title);
+      if (hasText(job.company)) bits.push("at " + job.company);
+      const lines = toLines(job.description);
+      let text = bits.join(" ");
+      if (lines.length) text += (text ? ". " : "") + lines.slice(0, 3).join(". ");
+      state.cover.experience = text.trim();
+    }
+    saveState();
+    fillCoverFields();
+    toast("Details copied from your resume.");
+  });
+
+  $("#clNew").addEventListener("click", () => {
+    confirmDialog("Clear the cover letter?", "This removes your cover letter details and generated text. Your resume is not affected.", "Clear letter", () => {
+      state.cover = blankCover();
+      saveState();
+      fillCoverFields();
+      renderLetter();
+      toast("Cover letter cleared.");
+    });
+  });
+
+  $("#clPrint").addEventListener("click", () => {
+    if (!hasText(state.cover.body)) { toast("Generate or write your letter first."); return; }
+    printNode(buildLetter(), safeFilename(state.cover.name || state.resume.personal.fullName || "cover-letter"));
+  });
+
+  $("#clPdf").addEventListener("click", () => {
+    if (!requireTier("pro", "one-click PDF download")) return;
+    if (!hasText(state.cover.body)) { toast("Generate or write your letter first."); return; }
+    exportPdf(buildLetter(), safeFilename(state.cover.name || state.resume.personal.fullName || "cover-letter") + "-cover-letter");
+  });
+
+  $$("[data-plan]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const plan = btn.dataset.plan;
+      if (plan === "Free") {
+        showApp("resume");
+        toast("You're on the free plan — everything you need to get started.");
+        return;
+      }
+      if (plan === "Professional") openCheckout("pro");
+      else if (plan === "Career Bundle") openCheckout("bundle");
+    });
+  });
+
+  const rp1 = $("#restorePurchase1");
+  if (rp1) rp1.addEventListener("click", showRestoreDialog);
+
+  ["#tierBadge", "#tierBadgeCover"].forEach(sel => {
+    const b = $(sel);
+    if (b) b.addEventListener("click", showManagePlanDialog);
+  });
+
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeMobileNav(); });
+
+  refreshAllEditors();
+  showLanding();
+}
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>
